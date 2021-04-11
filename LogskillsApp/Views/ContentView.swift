@@ -37,13 +37,13 @@ struct ContentView: View {
                         Text("Stats")
                     }
             }
+            .padding(.bottom,2)
+            
             .navigationBarItems(
                 trailing: HStack {
                     NavigationLink(destination: SettingsView(), isActive: $isShowingDetailView){
                         EmptyView()
                     }
-                            
-                    
                     Button(action: {
                         isShowingDetailView.toggle()
                     }) {
@@ -52,8 +52,6 @@ struct ContentView: View {
                         }
                     }
                 }
-                
-                
             )
             .navigationBarTitle("Logskills App")
             .navigationBarTitleDisplayMode(.inline)
