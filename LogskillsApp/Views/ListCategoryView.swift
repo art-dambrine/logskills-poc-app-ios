@@ -2,34 +2,13 @@
 //  ListCategoryView.swift
 //  LogskillsApp
 //
-//  Created by Arthur Dambrine on 09/04/2021.
+//  Created by Arthur Dambrine on 11/04/2021.
 //
 
 import SwiftUI
 
-struct Category: Codable {
-    let id_categorie: Int
-    let nom: String
-}
-
-class apiCallCategories {
-    func getCategories(completion:@escaping ([Category]) -> ()) {
-        guard let url = URL(string: "https://api.art-dambrine.ovh/categories") else { return }
-        URLSession.shared.dataTask(with: url) { (data, _, _) in
-            
-            let categories = try! JSONDecoder().decode([Category].self, from: data!)
-            // print(categories)
-            
-            DispatchQueue.main.async {
-                completion(categories)
-            }
-        }
-        .resume()
-    }
-}
-
-
 struct ListCategoryView: View {
+    @EnvironmentObject var settings: Settings
     @State var categories: [Category] = []
     
     var body: some View {
@@ -49,8 +28,7 @@ struct ListCategoryView: View {
                 }
                 
             }.onAppear {
-                print("ContentView appeared!")
-                apiCallCategories().getCategories { (categories) in
+                categoryApi().getAllCategories(apiBaseUrl: settings.apiBaseUrl) { (categories) in
                     self.categories = categories
                 }
             }
@@ -65,4 +43,3 @@ struct ListCategoryView_Previews: PreviewProvider {
         ListCategoryView()
     }
 }
-

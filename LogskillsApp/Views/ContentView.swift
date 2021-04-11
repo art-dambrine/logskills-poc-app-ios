@@ -7,14 +7,11 @@
 
 import SwiftUI
 
-class User: ObservableObject {
-    @Published var score = 0
-}
-
 
 struct ContentView: View {
     @State private var isShowingDetailView = false
     @ObservedObject var user = User()
+    @ObservedObject var settings = Settings()
 
     
     var body: some View {
@@ -64,6 +61,7 @@ struct ContentView: View {
         
         // Important à ajouter
         .environmentObject(user)
+        .environmentObject(settings)
         
     }
 }

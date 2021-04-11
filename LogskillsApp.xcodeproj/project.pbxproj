@@ -12,7 +12,10 @@
 		FA6713E1262032CA00E05128 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA6713E0262032CA00E05128 /* Assets.xcassets */; };
 		FA6713E4262032CA00E05128 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA6713E3262032CA00E05128 /* Preview Assets.xcassets */; };
 		FA6713ED262032F800E05128 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6713EC262032F800E05128 /* SettingsView.swift */; };
-		FA6713F02620333900E05128 /* ListCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6713EF2620333900E05128 /* ListCategoryView.swift */; };
+		FA6713F02620333900E05128 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6713EF2620333900E05128 /* Category.swift */; };
+		FAF005DC2622FEFB00EFB8CD /* ListCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF005DB2622FEFB00EFB8CD /* ListCategoryView.swift */; };
+		FAF005DF2622FF2C00EFB8CD /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF005DE2622FF2C00EFB8CD /* User.swift */; };
+		FAF005E6262302C800EFB8CD /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF005E5262302C800EFB8CD /* Settings.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,7 +26,10 @@
 		FA6713E3262032CA00E05128 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		FA6713E5262032CA00E05128 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA6713EC262032F800E05128 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		FA6713EF2620333900E05128 /* ListCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCategoryView.swift; sourceTree = "<group>"; };
+		FA6713EF2620333900E05128 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
+		FAF005DB2622FEFB00EFB8CD /* ListCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCategoryView.swift; sourceTree = "<group>"; };
+		FAF005DE2622FF2C00EFB8CD /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		FAF005E5262302C800EFB8CD /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,12 +63,11 @@
 			isa = PBXGroup;
 			children = (
 				FA6713DC262032C900E05128 /* LogskillsAppApp.swift */,
-				FA6713DE262032C900E05128 /* ContentView.swift */,
+				FAF005EB262305AE00EFB8CD /* Views */,
+				FAF005E92623057C00EFB8CD /* Model */,
 				FA6713E0262032CA00E05128 /* Assets.xcassets */,
 				FA6713E5262032CA00E05128 /* Info.plist */,
 				FA6713E2262032CA00E05128 /* Preview Content */,
-				FA6713EC262032F800E05128 /* SettingsView.swift */,
-				FA6713EF2620333900E05128 /* ListCategoryView.swift */,
 			);
 			path = LogskillsApp;
 			sourceTree = "<group>";
@@ -73,6 +78,26 @@
 				FA6713E3262032CA00E05128 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		FAF005E92623057C00EFB8CD /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				FAF005DE2622FF2C00EFB8CD /* User.swift */,
+				FAF005E5262302C800EFB8CD /* Settings.swift */,
+				FA6713EF2620333900E05128 /* Category.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		FAF005EB262305AE00EFB8CD /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				FA6713DE262032C900E05128 /* ContentView.swift */,
+				FA6713EC262032F800E05128 /* SettingsView.swift */,
+				FAF005DB2622FEFB00EFB8CD /* ListCategoryView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -145,8 +170,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA6713ED262032F800E05128 /* SettingsView.swift in Sources */,
+				FAF005DC2622FEFB00EFB8CD /* ListCategoryView.swift in Sources */,
 				FA6713DF262032C900E05128 /* ContentView.swift in Sources */,
-				FA6713F02620333900E05128 /* ListCategoryView.swift in Sources */,
+				FA6713F02620333900E05128 /* Category.swift in Sources */,
+				FAF005E6262302C800EFB8CD /* Settings.swift in Sources */,
+				FAF005DF2622FF2C00EFB8CD /* User.swift in Sources */,
 				FA6713DD262032C900E05128 /* LogskillsAppApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
