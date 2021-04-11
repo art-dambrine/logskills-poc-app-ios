@@ -7,18 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA397F9E26232764006CCC28 /* FormActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA397F9D26232764006CCC28 /* FormActivityView.swift */; };
+		FA397FA226232D56006CCC28 /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA397FA126232D56006CCC28 /* Activity.swift */; };
 		FA6713DD262032C900E05128 /* LogskillsAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6713DC262032C900E05128 /* LogskillsAppApp.swift */; };
 		FA6713DF262032C900E05128 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6713DE262032C900E05128 /* ContentView.swift */; };
 		FA6713E1262032CA00E05128 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA6713E0262032CA00E05128 /* Assets.xcassets */; };
 		FA6713E4262032CA00E05128 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA6713E3262032CA00E05128 /* Preview Assets.xcassets */; };
 		FA6713ED262032F800E05128 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6713EC262032F800E05128 /* SettingsView.swift */; };
 		FA6713F02620333900E05128 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6713EF2620333900E05128 /* Category.swift */; };
-		FAF005DC2622FEFB00EFB8CD /* ListCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF005DB2622FEFB00EFB8CD /* ListCategoryView.swift */; };
 		FAF005DF2622FF2C00EFB8CD /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF005DE2622FF2C00EFB8CD /* User.swift */; };
 		FAF005E6262302C800EFB8CD /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF005E5262302C800EFB8CD /* Settings.swift */; };
+		FAF005EF262323AD00EFB8CD /* ListActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF005EE262323AD00EFB8CD /* ListActivityView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FA397F9D26232764006CCC28 /* FormActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormActivityView.swift; sourceTree = "<group>"; };
+		FA397FA126232D56006CCC28 /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
 		FA6713D9262032C900E05128 /* LogskillsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LogskillsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA6713DC262032C900E05128 /* LogskillsAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogskillsAppApp.swift; sourceTree = "<group>"; };
 		FA6713DE262032C900E05128 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -27,9 +31,9 @@
 		FA6713E5262032CA00E05128 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA6713EC262032F800E05128 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		FA6713EF2620333900E05128 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
-		FAF005DB2622FEFB00EFB8CD /* ListCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCategoryView.swift; sourceTree = "<group>"; };
 		FAF005DE2622FF2C00EFB8CD /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		FAF005E5262302C800EFB8CD /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		FAF005EE262323AD00EFB8CD /* ListActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListActivityView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +90,7 @@
 				FAF005DE2622FF2C00EFB8CD /* User.swift */,
 				FAF005E5262302C800EFB8CD /* Settings.swift */,
 				FA6713EF2620333900E05128 /* Category.swift */,
+				FA397FA126232D56006CCC28 /* Activity.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -95,7 +100,8 @@
 			children = (
 				FA6713DE262032C900E05128 /* ContentView.swift */,
 				FA6713EC262032F800E05128 /* SettingsView.swift */,
-				FAF005DB2622FEFB00EFB8CD /* ListCategoryView.swift */,
+				FAF005EE262323AD00EFB8CD /* ListActivityView.swift */,
+				FA397F9D26232764006CCC28 /* FormActivityView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -170,10 +176,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA6713ED262032F800E05128 /* SettingsView.swift in Sources */,
-				FAF005DC2622FEFB00EFB8CD /* ListCategoryView.swift in Sources */,
 				FA6713DF262032C900E05128 /* ContentView.swift in Sources */,
 				FA6713F02620333900E05128 /* Category.swift in Sources */,
 				FAF005E6262302C800EFB8CD /* Settings.swift in Sources */,
+				FAF005EF262323AD00EFB8CD /* ListActivityView.swift in Sources */,
+				FA397F9E26232764006CCC28 /* FormActivityView.swift in Sources */,
+				FA397FA226232D56006CCC28 /* Activity.swift in Sources */,
 				FAF005DF2622FF2C00EFB8CD /* User.swift in Sources */,
 				FA6713DD262032C900E05128 /* LogskillsAppApp.swift in Sources */,
 			);

@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    
     @EnvironmentObject var user: User
     @EnvironmentObject var settings: Settings
-    
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
     @State private var enableShowInClear = false
     @State private var username: String = ""

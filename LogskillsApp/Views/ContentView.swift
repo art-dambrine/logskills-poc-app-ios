@@ -19,7 +19,7 @@ struct ContentView: View {
         NavigationView{
             TabView {
                 
-                ListCategoryView()
+                ListActivityView()
                     .tabItem {
                         Image(systemName: "list.star")
                         Text("Activites")
