@@ -18,9 +18,6 @@ struct SettingsView: View {
     @State private var password: String = ""
     @State private var apiUrl: String = ""
     
-    @State private var showingAdvancedOptions = false
-    @State private var enableLogging = false
-    
     var body: some View {
         
         NavigationView {
@@ -50,8 +47,11 @@ struct SettingsView: View {
                         UserDefaults.standard.set(password, forKey: "password")
                         UserDefaults.standard.set(apiUrl, forKey: "apiUrl")
                         
-                        // return back to home view
-                        action: do {self.presentationMode.wrappedValue.dismiss()}
+                        // return back to home view after 0.2 sec
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                            action: do {self.presentationMode.wrappedValue.dismiss()}
+                        }
+                        
                         
                     }
                 }
