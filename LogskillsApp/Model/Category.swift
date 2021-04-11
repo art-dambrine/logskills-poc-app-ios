@@ -14,15 +14,18 @@ struct Category: Codable {
 
 class categoryApi {
     func getAllCategories(apiBaseUrl:String, completion:@escaping ([Category]) -> ()) {
+        
         guard let url = URL(string: apiBaseUrl+"/categories") else { return }
+        
         URLSession.shared.dataTask(with: url) { (data, _, _) in
-            
-            let categories = try! JSONDecoder().decode([Category].self, from: data!)
-            // print(categories)
-            
-            DispatchQueue.main.async {
-                completion(categories)
+            if (data != nil) {
+                let categories = try! JSONDecoder().decode([Category].self, from: data!)
+                
+                DispatchQueue.main.async {
+                    completion(categories)
+                }
             }
+                        
         }
         .resume()
     }

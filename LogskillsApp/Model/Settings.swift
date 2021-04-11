@@ -8,5 +8,5 @@
 import Foundation
 
 class Settings: ObservableObject {
-    @Published var apiBaseUrl = "https://api.art-dambrine.ovh"
+    @Published var apiBaseUrl: String = UserDefaults.standard.string(forKey: "apiUrl") ?? "https://api.art-dambrine.ovh"
 }

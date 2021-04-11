@@ -7,6 +7,7 @@
 
 import Foundation
 
-class User: ObservableObject {
-    @Published var score = 0
+class User: ObservableObject {    
+    @Published var username: String = UserDefaults.standard.string(forKey: "username") ?? ""
+    @Published var password: String = UserDefaults.standard.string(forKey: "password") ?? ""
 }
