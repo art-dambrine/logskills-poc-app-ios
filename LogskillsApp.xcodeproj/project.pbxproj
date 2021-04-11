@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA36F17026237D2A009FA024 /* PomodoroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA36F16F26237D2A009FA024 /* PomodoroView.swift */; };
 		FA397F9E26232764006CCC28 /* FormActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA397F9D26232764006CCC28 /* FormActivityView.swift */; };
 		FA397FA226232D56006CCC28 /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA397FA126232D56006CCC28 /* Activity.swift */; };
 		FA6713DD262032C900E05128 /* LogskillsAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6713DC262032C900E05128 /* LogskillsAppApp.swift */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FA36F16F26237D2A009FA024 /* PomodoroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroView.swift; sourceTree = "<group>"; };
 		FA397F9D26232764006CCC28 /* FormActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormActivityView.swift; sourceTree = "<group>"; };
 		FA397FA126232D56006CCC28 /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
 		FA6713D9262032C900E05128 /* LogskillsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LogskillsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -102,6 +104,7 @@
 				FA6713EC262032F800E05128 /* SettingsView.swift */,
 				FAF005EE262323AD00EFB8CD /* ListActivityView.swift */,
 				FA397F9D26232764006CCC28 /* FormActivityView.swift */,
+				FA36F16F26237D2A009FA024 /* PomodoroView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -180,6 +183,7 @@
 				FA6713F02620333900E05128 /* Category.swift in Sources */,
 				FAF005E6262302C800EFB8CD /* Settings.swift in Sources */,
 				FAF005EF262323AD00EFB8CD /* ListActivityView.swift in Sources */,
+				FA36F17026237D2A009FA024 /* PomodoroView.swift in Sources */,
 				FA397F9E26232764006CCC28 /* FormActivityView.swift in Sources */,
 				FA397FA226232D56006CCC28 /* Activity.swift in Sources */,
 				FAF005DF2622FF2C00EFB8CD /* User.swift in Sources */,

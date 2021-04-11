@@ -25,7 +25,7 @@ struct ContentView: View {
                         Text("Activites")
                     }
                 
-                Text("Display infos from the selected activity")
+                PomodoroView()
                     .tabItem {
                         Image(systemName: "stopwatch.fill")
                         Text("Pomodoro")
