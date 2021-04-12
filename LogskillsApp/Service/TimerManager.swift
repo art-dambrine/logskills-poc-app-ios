@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import UIKit
 import SwiftUI
 
 enum TimerMode {
@@ -14,18 +13,17 @@ enum TimerMode {
     case paused
     case initial
     case breaktime
+    case pausedbreaktime
 }
 
 class TimerManager: ObservableObject {
     
     @Published var timerMode: TimerMode = .initial
     
-    @Published var secondsLeft = UserDefaults.standard.integer(forKey: "timerlength") + 1
+    @Published var secondsLeft = UserDefaults.standard.integer(forKey: "timerlength")
     
     @Published var seconds: String = "00"
     @Published var minutes: String = "00"
-    
-    @Published var pomodoroCompleted: Bool = false
     
     @Published var roundCurrent = 1
     @Published var pauseCurrent = 0
@@ -33,116 +31,73 @@ class TimerManager: ObservableObject {
     var nbRoundMax = 3
     var nbPauseMax = 2
     var pauseLength = 5
+    var roundLength = 25
     
     let soundManager = SoundManager()
     var sound = "tone"
     
-    var backgroundTask: UIBackgroundTaskIdentifier = .invalid
-    
     var timer: Timer? = nil
     
-    init(){
-        NotificationCenter.default.addObserver(
-            self, selector: #selector(reinstateBackgroundTask),
-            name: UIApplication.didBecomeActiveNotification, object: nil
-        )
-    }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
+    let multiplicateurSecondes = 1 // changer pendant le dev
     
     
     func startTimerBackPreceeding(nbRoundMaxParam: Int, nbPauseMaxParam: Int, pauseLengthParam: Int, soundParam: String){
+        // Fonction pivot pour lancer le timer appel en premier par la vue
         
+        // Initialisation des valeurs max passées par la vue
         self.nbRoundMax = nbRoundMaxParam
         self.nbPauseMax = nbPauseMaxParam
         self.pauseLength = pauseLengthParam
         self.sound = soundParam
         
-        timerMode = .running
-    
+        if(timerMode == .initial) {
+            // Initialisation du pomodoro roundCurrent et pauseCurrent
+            self.roundCurrent = 1
+            self.pauseCurrent = 0
+        }
+        
+        // Si on était en pausedbreaktime et que l'on redémarre on remet en mode breaktime
+        if (timerMode != .pausedbreaktime){
+            timerMode = .running
+        } else {
+            timerMode = .breaktime
+        }
+        
+        // Petit son joué au lancement du timer et affichage du timer displayHumanReadableTimer
         self.soundManager.playSound(sound: self.sound, type: "mp3")
         self.displayHumanReadableTimer()
         
-        self.roundCurrent = 1
-        self.pauseCurrent = 0
-        
+        // Démarrage d'un timer qui exectura timerCodeExecute()
         startTimerBack()
-        
     }
-    
     
     @IBAction func startTimerBack() {
-        
         self.timer = Timer.scheduledTimer(timeInterval: 1, target: self,
-                                          selector: #selector(calculateRemainingTime), userInfo: nil, repeats: true)
-        // register background task
-        registerBackgroundTask()
-        
+                                          selector: #selector(timerCodeExecute), userInfo: nil, repeats: true)
     }
     
-    
-    
-    @objc func calculateRemainingTime() {
+    @objc func timerCodeExecute() {
         
         // 2. Check time to change values
         self.secondsLeft -= 1
         
         self.displayHumanReadableTimer()
-        
-        
+                
         if self.secondsLeft == 0 {
             
             if(self.roundCurrent == nbRoundMax && self.pauseCurrent == nbPauseMax){
-                
-                self.endTimer()
-                self.soundManager.playSound(sound: self.sound, type: "mp3")
-                
-                // Launch call to API to save completion
-                // ...
-                
+                pomodoroCompleted()
             } else {
-                
-                if (self.roundCurrent > self.pauseCurrent){
-                    self.pauseCurrent += 1
-                    self.secondsLeft = pauseLength
-                    self.timerMode = .breaktime
-                    self.soundManager.playSound(sound: self.sound, type: "mp3")
-                    self.displayHumanReadableTimer()
-                } else {
-                    self.roundCurrent += 1
-                    self.secondsLeft = UserDefaults.standard.integer(forKey: "timerlength")
-                    self.timerMode = .running
-                    self.soundManager.playSound(sound: self.sound, type: "mp3")
-                    self.displayHumanReadableTimer()
-                }
-                
+                // Changement d'état round vers pause ou pause vers round
+                changementRoundOrPauseTimer()
             }
-            
-            
-        }
-        
-        switch UIApplication.shared.applicationState {
-        case .active:
-            //print("App is backgrounded. Next secondsLeft = \(secondsLeft)")
-            break
-        case .background:
-            print("App is backgrounded. Next secondsLeft = \(secondsLeft)")
-            print("Background time remaining = \(UIApplication.shared.backgroundTimeRemaining) seconds")
-            break
-        case .inactive:
-            break
-        @unknown default:
-            print("Background ERROR default l 212")
-            break
         }
         
     }
     
     
     func displayHumanReadableTimer(){
+        // Permet d'afficher le timer sous une forme toujours lisible à l'écran
         
         if (self.secondsLeft >= 60) {
             
@@ -170,18 +125,105 @@ class TimerManager: ObservableObject {
         }
     }
     
-    func stopTimer(){
-        timerMode = .paused
-        self.timer?.invalidate()
-        self.timer = nil
+    func pomodoroCompleted(){
+        // On peut ici terminer le timer
+        self.endTimer()
+        self.soundManager.playSound(sound: self.sound, type: "mp3")
         
-        if backgroundTask != .invalid {
-            endBackgroundTask()
+        // TODO : Popup de notif à l'utilisateur, prise en compte de son pomodoro
+        // Launch call to API to save stats of pomodoro
+        // ...
+        
+    }
+    
+    func changementRoundOrPauseTimer() {
+        
+        if self.secondsLeft == 0 {
+            if (self.roundCurrent > self.pauseCurrent){
+                self.pauseCurrent += 1
+                self.secondsLeft = pauseLength
+                self.timerMode = .breaktime
+                self.soundManager.playSound(sound: self.sound, type: "mp3")
+                self.displayHumanReadableTimer()
+            } else {
+                self.roundCurrent += 1
+                self.secondsLeft = UserDefaults.standard.integer(forKey: "timerlength")
+                self.timerMode = .running
+                self.soundManager.playSound(sound: self.sound, type: "mp3")
+                self.displayHumanReadableTimer()
+            }
+        } else {
+            print("ERROR : call de changementRoundOrPauseTimer lorsque secondsLeft != 0")
+        }
+                
+    }
+    
+    
+    func clcTotalRemainingTime() -> Int{
+        // Appelé par clcTimeRemainingAfterComingBackFromBackground
+        let nbRoundRestant = (self.nbRoundMax - self.roundCurrent)
+        let nbPauseRestant = (self.nbPauseMax - self.pauseCurrent)
+        let result = nbRoundRestant * self.roundLength + nbPauseRestant * (self.pauseLength * self.multiplicateurSecondes) + self.secondsLeft
+        // print("Result = \(nbRoundRestant) * \(self.roundLength) + \(nbPauseRestant) * \(self.pauseLength * self.multiplicateurSecondes) + \(self.secondsLeft) = \(result)")
+        return result
+    }
+    
+    func clcTimeRemainingAfterComingBackFromBackground(timeElapsed: Int){
+        // Appelé par la vue lors d'un retour depuis le background si on était pas en pause au moment de quitter
+        // Besoin de :
+        // temps écoulé = timeElapsed
+        // temps total restant avant background = clcTotalRemainingTime()
+        // print("Temps total restant avant soustraction : \(self.clcTotalRemainingTime())")
+        var timeElapsedToDrain = timeElapsed
+        
+        let totalRemainingBeforeBack = clcTotalRemainingTime()
+        if(timeElapsed >= totalRemainingBeforeBack) {
+            print("Fin du pomodoro, complété ou oublié")
+            pomodoroCompleted()
+        } else {
+            print("Pomororo toujours en cours")
+            // Calculer les round / pauses et temps restant
+            let secondsRemaining = totalRemainingBeforeBack - timeElapsed
+            print("Il reste au total \(secondsRemaining) secondes, calcul des rounds et pauses ...")
+            
+            // Logique de calcul des rounds et pauses à décompter via timeElapsedToDrain auquel on retranche secondsLeft jusqu'à ce qu'il soit 'vidé'
+            while (timeElapsedToDrain > 0) {
+                // print("timeElapsedToDrain avant calcul  : \(timeElapsedToDrain) , roundCurrent: \(roundCurrent), pauseCurrent: \(pauseCurrent), self.secondsLeft : \(self.secondsLeft)")
+                if (timeElapsedToDrain < self.secondsLeft){
+                    // timeElapsedToDrain inférieur on reste dans le même round ou pause
+                    let temp = self.secondsLeft
+                    self.secondsLeft -= timeElapsedToDrain
+                    timeElapsedToDrain -= temp
+                } else {
+                    // timeElapsedToDrain supérieur on saute un round ou pause
+                    timeElapsedToDrain -= self.secondsLeft
+                    self.secondsLeft = 0
+                    changementRoundOrPauseTimer()
+                }
+            }
+            
         }
     }
     
+    
+    
+    func stopTimer(){
+        // si en .breaktime on indique pausedbreaktime
+        if(timerMode == .breaktime){
+            timerMode = .pausedbreaktime
+        } else {
+            timerMode = .paused
+        }
+        
+        self.timer?.invalidate()
+        self.timer = nil
+    }
+    
     func restartTimer(){
-        timerMode = .initial
+        // Si on est hors du breaktime on reinitialise sinon on laisse breaktime
+        if(timerMode != .breaktime){
+            timerMode = .initial
+        }
         self.secondsLeft = UserDefaults.standard.integer(forKey: "timerlength")
         self.minutes = "00"
         self.seconds = "00"
@@ -197,29 +239,9 @@ class TimerManager: ObservableObject {
     
     func setTimerlength(secondes: Int){
         UserDefaults.standard.set(secondes, forKey: "timerlength")
+        self.roundLength = secondes
         self.secondsLeft = secondes
     }
     
-    
-    
-    func registerBackgroundTask() {
-        backgroundTask = UIApplication.shared.beginBackgroundTask { [weak self] in
-            self?.endBackgroundTask()
-        }
-        assert(backgroundTask != .invalid)
-    }
-    
-    func endBackgroundTask() {
-        print("Background task ended.")
-        UIApplication.shared.endBackgroundTask(backgroundTask)
-        backgroundTask = .invalid
-    }
-    
-    
-    @objc func reinstateBackgroundTask() {
-        if self.timer != nil && backgroundTask == .invalid {
-            registerBackgroundTask()
-        }
-    }
     
 }

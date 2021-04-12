@@ -15,7 +15,10 @@ struct PomodoroView: View {
     @ObservedObject var timerManager = TimerManager()
     
     @State var selectedPickerIndex: Int = 0
-    @State var activitySelected: Activity?        
+    @State var activitySelected: Activity?
+    
+    @State var timeIntervalMovingToBackground = 0
+    @State var timeIntervalMovingBackToForeground = 0
     
     let defaultTimer = 25 // mins
     let defaultPause = 5 // mins
@@ -31,7 +34,7 @@ struct PomodoroView: View {
                 .font(.system(size: 60))
                 .padding(.top,10)
             
-            if (self.timerManager.timerMode == .paused || self.timerManager.timerMode == .initial) {
+            if (self.timerManager.timerMode == .paused || self.timerManager.timerMode == .initial || self.timerManager.timerMode == .pausedbreaktime) {
                 VStack {
                     Button(action:{
                         
@@ -54,7 +57,7 @@ struct PomodoroView: View {
                             .resizable()
                             .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
                             .frame(width: 90, height: 90)
-                            .foregroundColor( self.timerManager.timerMode == .breaktime ? .blue : .pink)
+                            .foregroundColor( (self.timerManager.timerMode == .breaktime || self.timerManager.timerMode == .pausedbreaktime) ? .blue : .pink)
                         
                     }
                     .padding(.all)
@@ -62,14 +65,14 @@ struct PomodoroView: View {
                 }
             } else {
                 Button(action:{
-                    print("STOP")
+                    print("STOP")                    
                     self.timerManager.stopTimer()
                 }){
                     Image(systemName: "pause.circle.fill")
                         .resizable()
                         .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
                         .frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
-                        .foregroundColor( self.timerManager.timerMode == .breaktime ? .blue : .pink)
+                        .foregroundColor( (self.timerManager.timerMode == .breaktime || self.timerManager.timerMode == .pausedbreaktime) ? .blue : .pink)
                 }
                 .padding(.all)
             }
@@ -117,7 +120,7 @@ struct PomodoroView: View {
                 
                 Spacer()
                 
-                if(self.timerManager.timerMode == .breaktime) {
+                if(self.timerManager.timerMode == .breaktime || self.timerManager.timerMode == .pausedbreaktime) {
                     Text("Pause n°" + String(self.timerManager.pauseCurrent))
                         .bold()
                         .font(.title2)
@@ -148,9 +151,26 @@ struct PomodoroView: View {
                 self.selectedPickerIndex = activitiesObs.activities[0].id
             }                        
         }
-        
-        
-        
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
+                print("Moving to the background!")
+                // print(timerManager.secondsLeft)
+                let timeIntervalSince1970 = Date().timeIntervalSince1970
+                self.timeIntervalMovingToBackground = Int(round(timeIntervalSince1970))
+                
+            }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+                print("Moving back to the foreground!")
+                // print(timerManager.secondsLeft)
+                let timeIntervalSince1970 = Date().timeIntervalSince1970
+                self.timeIntervalMovingBackToForeground = Int(round(timeIntervalSince1970))
+                let timeElapsed = timeIntervalMovingBackToForeground - timeIntervalMovingToBackground
+                print("Tps timeElapsed : " + String(timeElapsed))
+            
+                // Mettre à jour le temps du timerManager si on était pas en pause au moment de quitter
+                if(timerManager.timerMode != .paused && timerManager.timerMode != .pausedbreaktime){
+                    timerManager.clcTimeRemainingAfterComingBackFromBackground(timeElapsed: timeElapsed)
+                }
+            }
         
     }
 }
