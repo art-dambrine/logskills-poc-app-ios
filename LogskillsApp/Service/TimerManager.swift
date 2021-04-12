@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+import UIKit
 
 enum TimerMode {
     case running
@@ -29,51 +29,105 @@ class TimerManager: ObservableObject {
     @Published var roundCurrent = 1
     @Published var pauseCurrent = 0
     
-    var timer: Timer? = nil
-     
+    var nbRoundMax = 3
+    var nbPauseMax = 2
+    var pauseLength = 5
     
-    func startTimer(nbRoundMax: Int, nbPauseMax: Int, pauseLength: Int){
+    var backgroundTask: UIBackgroundTaskIdentifier = .invalid
+    
+    var timer: Timer? = nil
+    
+    init(){
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(reinstateBackgroundTask),
+            name: UIApplication.didBecomeActiveNotification, object: nil
+        )
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    
+    
+    func startTimerBackPreceeding(nbRoundMaxParam: Int, nbPauseMaxParam: Int, pauseLengthParam: Int){
+        
+        self.nbRoundMax = nbRoundMaxParam
+        self.nbPauseMax = nbPauseMaxParam
+        self.pauseLength = pauseLengthParam
+        
         timerMode = .running
         
         self.roundCurrent = 1
         self.pauseCurrent = 0
         
-        // 1. Make a new timer
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true){ tempTimer in
-            // 2. Check time to change values
-            self.secondsLeft -= 1
+        startTimerBack()
+        
+    }
+    
+    
+    @IBAction func startTimerBack() {
+        
+        self.timer = Timer.scheduledTimer(timeInterval: 1, target: self,
+                                          selector: #selector(calculateRemainingTime), userInfo: nil, repeats: true)
+        // register background task
+        registerBackgroundTask()
+        
+    }
+    
+    
+    
+    @objc func calculateRemainingTime() {
+        
+        // 2. Check time to change values
+        self.secondsLeft -= 1
+        
+        self.displayHumanReadableTimer()
+        
+        
+        if self.secondsLeft == 0 {
             
-            self.displayHumanReadableTimer()
-            
-            
-            if self.secondsLeft == 0 {
+            if(self.roundCurrent == nbRoundMax && self.pauseCurrent == nbPauseMax){
                 
-                if(self.roundCurrent == nbRoundMax && self.pauseCurrent == nbPauseMax){
-                    
-                    self.endTimer()
-                    
-                    // Launch call to API to save completion
-                    // ...
-                    
+                self.endTimer()
+                
+                // Launch call to API to save completion
+                // ...
+                
+            } else {
+                
+                if (self.roundCurrent > self.pauseCurrent){
+                    self.pauseCurrent += 1
+                    self.secondsLeft = pauseLength
+                    self.timerMode = .breaktime
                 } else {
-                    
-                    if (self.roundCurrent > self.pauseCurrent){
-                        self.pauseCurrent += 1
-                        self.secondsLeft = pauseLength
-                        self.timerMode = .breaktime                        
-                    } else {
-                        self.roundCurrent += 1
-                        self.secondsLeft = UserDefaults.standard.integer(forKey: "timerlength") + 1
-                        self.timerMode = .running
-                    }
-                    
-                }                                
-                
+                    self.roundCurrent += 1
+                    self.secondsLeft = UserDefaults.standard.integer(forKey: "timerlength") + 1
+                    self.timerMode = .running
+                }
                 
             }
             
+            
         }
+        
+        switch UIApplication.shared.applicationState {
+        case .active:
+            //print("App is backgrounded. Next secondsLeft = \(secondsLeft)")
+            break
+        case .background:
+            print("App is backgrounded. Next secondsLeft = \(secondsLeft)")
+            print("Background time remaining = \(UIApplication.shared.backgroundTimeRemaining) seconds")
+            break
+        case .inactive:
+            break
+        @unknown default:
+            print("Background ERROR default l 212")
+            break
+        }
+        
     }
+    
     
     func displayHumanReadableTimer(){
         if (self.secondsLeft > 60) {
@@ -106,6 +160,10 @@ class TimerManager: ObservableObject {
         timerMode = .paused
         self.timer?.invalidate()
         self.timer = nil
+        
+        if backgroundTask != .invalid {
+            endBackgroundTask()
+        }
     }
     
     func restartTimer(){
@@ -126,6 +184,28 @@ class TimerManager: ObservableObject {
     func setTimerlength(secondes: Int){
         UserDefaults.standard.set(secondes, forKey: "timerlength")
         self.secondsLeft = secondes
+    }
+    
+    
+    
+    func registerBackgroundTask() {
+        backgroundTask = UIApplication.shared.beginBackgroundTask { [weak self] in
+            self?.endBackgroundTask()
+        }
+        assert(backgroundTask != .invalid)
+    }
+    
+    func endBackgroundTask() {
+        print("Background task ended.")
+        UIApplication.shared.endBackgroundTask(backgroundTask)
+        backgroundTask = .invalid
+    }
+    
+    
+    @objc func reinstateBackgroundTask() {
+        if self.timer != nil && backgroundTask == .invalid {
+            registerBackgroundTask()
+        }
     }
     
 }

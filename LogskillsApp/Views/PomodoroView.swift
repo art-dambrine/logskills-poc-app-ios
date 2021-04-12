@@ -21,6 +21,7 @@ struct PomodoroView: View {
     let defaultPause = 5 // mins
     let defaultNbRounds = 3 // 3 rounds        
     let multiplicateurSecondes = 1 // changer pendant le dev
+        
     
     var body: some View {
         
@@ -37,12 +38,12 @@ struct PomodoroView: View {
                         if self.timerManager.timerMode == .initial {
                             print(self.selectedPickerIndex)
                             self.timerManager.setTimerlength(secondes: (self.activitySelected?.temps_focus ?? 1) * multiplicateurSecondes)
-                        }
+                        }                        
                         
-                        self.timerManager.startTimer(
-                            nbRoundMax: self.activitySelected?.nb_round ?? defaultNbRounds,
-                            nbPauseMax: (self.activitySelected?.nb_round ?? defaultNbRounds) - 1,
-                            pauseLength: (self.activitySelected?.temps_pause ?? defaultPause) * multiplicateurSecondes
+                        self.timerManager.startTimerBackPreceeding(
+                            nbRoundMaxParam: self.activitySelected?.nb_round ?? defaultNbRounds,
+                            nbPauseMaxParam: (self.activitySelected?.nb_round ?? defaultNbRounds) - 1,
+                            pauseLengthParam: (self.activitySelected?.temps_pause ?? defaultPause) * multiplicateurSecondes
                         )
                         
                         print("START")
@@ -144,7 +145,7 @@ struct PomodoroView: View {
             activitiesObs.refreshActivityList()
             if activitiesObs.activities.count > 0 {
                 self.selectedPickerIndex = activitiesObs.activities[0].id
-            }
+            }                        
         }
         
         
