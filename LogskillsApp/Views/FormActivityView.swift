@@ -69,7 +69,7 @@ struct FormActivityView: View {
                     }
                 }
                 
-                Section(){
+                Section(header: Text("Nombre de rounds")){
                     Picker("Select the number of rounds", selection: $nbRoundSelected) {
                                     ForEach(rounds, id: \.self) {
                                         Text(String($0))
