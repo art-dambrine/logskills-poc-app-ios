@@ -9,12 +9,12 @@ import SwiftUI
 
 struct PomodoroView: View {
     
+    @EnvironmentObject var activitiesObs: ActivitiesObs
     @EnvironmentObject var settings: Settings
     
     @ObservedObject var timerManager = TimerManager()
     
     @State var selectedPickerIndex: Int = 0
-    @State var activities: [Activity] = []
     @State var activitySelected: Activity?
     
     let defaultTimer = 25 // mins
@@ -82,14 +82,16 @@ struct PomodoroView: View {
             if self.timerManager.timerMode == .initial {
                 
                 Picker(selection: $selectedPickerIndex, label: Text("")){
-                    ForEach(activities, id: \.self.id) { activity in
+                    ForEach(activitiesObs.activities, id: \.self.id) { activity in
                         Text("N°\(activity.id). " + activity.nom + "")
                     }
                 }
                 .onReceive([self.selectedPickerIndex].publisher.first()) { (value) in
                     // print(value)
-                    if value != 0 {
-                        self.activitySelected = activities.filter{ $0.id == value }[0]
+                    if (value != 0) {
+                        if (activitiesObs.activities.filter{ $0.id == value }.count > 0){
+                            self.activitySelected = activitiesObs.activities.filter{ $0.id == value }[0]
+                        }                            
                     }
                 }
                 .labelsHidden()
@@ -139,13 +141,9 @@ struct PomodoroView: View {
         }
         .padding(20)
         .onAppear() {
-            // availableActivities
-            activityApi().getAllActivities(apiBaseUrl: settings.apiBaseUrl) { (activities) in
-                self.activities = activities
-                if activities.count > 0 {
-                    self.selectedPickerIndex = activities[0].id
-                }
-                // print(activities.map{$0.nom}) // -> ["Bureau dev", "Muscu light", "Le projeeetttt", "VTT en forêt"]
+            activitiesObs.refreshActivityList()
+            if activitiesObs.activities.count > 0 {
+                self.selectedPickerIndex = activitiesObs.activities[0].id
             }
         }
         

@@ -7,12 +7,14 @@
 
 import SwiftUI
 
-
 struct ContentView: View {
     @State private var isShowingDetailView = false
     @ObservedObject var user = User()
     @ObservedObject var settings = Settings()
-
+    
+    @ObservedObject var activitiesObs = ActivitiesObs()
+    @ObservedObject var categoriesObs = CategoriesObs()
+    
     
     var body: some View {
         
@@ -60,6 +62,8 @@ struct ContentView: View {
         // Important à ajouter
         .environmentObject(user)
         .environmentObject(settings)
+        .environmentObject(activitiesObs)
+        .environmentObject(categoriesObs)
         
     }
 }

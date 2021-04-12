@@ -11,6 +11,8 @@ struct FormActivityView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
     @EnvironmentObject var settings: Settings
+    @EnvironmentObject var categoriesObs: CategoriesObs
+    
     
     @State private var categories: [Category] = []
     @State private var selectedCategory = ""
@@ -143,8 +145,12 @@ struct FormActivityView: View {
                 
                 
             }.onAppear{
-                categoryApi().getAllCategories(apiBaseUrl: settings.apiBaseUrl) { (categories) in
-                    self.categories = categories
+                
+                //    categoryApi().getAllCategories(apiBaseUrl: settings.apiBaseUrl) { (categories) in
+                //          ...
+                //  }
+                
+                self.categories = categoriesObs.categories
                     print(self.categories)
                     
                     self.categorySelectionList = []
@@ -155,7 +161,7 @@ struct FormActivityView: View {
                         self.selectedCategory = categorySelectionList[0]
                     }
                     
-                }
+
                 
                 // Récupération des informations de l'activité selectionnée
                 if activityAlreadyExist {
@@ -170,9 +176,8 @@ struct FormActivityView: View {
                     let array = self.selectedActivity.category.components(separatedBy: "/")
                     let categoryId = Int(array[array.count - 1]) ?? 1
                     
-                    categoryApi().getCategoriesById(apiBaseUrl: settings.apiBaseUrl, categoryId: categoryId, completion: { (category) in
-                        self.selectedCategory = category.nom
-                    })
+                    // Récupération de la categorie selectionnée par id
+                    self.selectedCategory = categories.filter{ $0.id == categoryId }[0].nom
                     
                 }
             }

@@ -9,14 +9,12 @@ import SwiftUI
 
 struct ListActivityView: View {
     @EnvironmentObject var settings: Settings    
-    
-    @State var activities: [Activity] = []
+    @EnvironmentObject var activitiesObs: ActivitiesObs
+    @EnvironmentObject var categoriesObs: CategoriesObs
     @State private var isShowingCreationView = false
     
     
     var body: some View {
-        
-        
         
         Form{
             
@@ -46,7 +44,7 @@ struct ListActivityView: View {
             
             Section{
                 List{
-                    ForEach(activities, id: \.id){ activite in
+                    ForEach(self.activitiesObs.activities, id: \.id){ activite in
                         HStack{
                             Text(activite.nom)
                                 .font(.subheadline)
@@ -64,10 +62,11 @@ struct ListActivityView: View {
             
             
         }.onAppear {
-            activityApi().getAllActivities(apiBaseUrl: settings.apiBaseUrl) { (activities) in
-                self.activities = activities
-            }
+            activitiesObs.refreshActivityList()
         }
+        // Important
+        .environmentObject(activitiesObs)
+        .environmentObject(categoriesObs)
         
         
         
@@ -77,9 +76,9 @@ struct ListActivityView: View {
         // delete the objects here`
         let index = offsets[offsets.startIndex]
         // Delete from API
-        activityApi().deleteActivity(apiBaseUrl: settings.apiBaseUrl, activityId: activities[index].id)
+        activityApi().deleteActivity(apiBaseUrl: settings.apiBaseUrl, activityId: self.activitiesObs.activities[index].id)
         // Delete from view
-        self.activities.remove(atOffsets: offsets)
+        self.activitiesObs.activities.remove(atOffsets: offsets)
     }
 }
 

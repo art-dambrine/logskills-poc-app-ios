@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 struct Activity: Codable {
     let id: Int
@@ -14,6 +15,24 @@ struct Activity: Codable {
     let temps_pause: Int
     let nb_round: Int
     let category: String
+}
+
+
+class ActivitiesObs: ObservableObject {
+    @ObservedObject var settings = Settings()
+    @Published var activities: [Activity] = []
+    
+    init(){
+        print("Init activities")
+        self.refreshActivityList()
+    }
+    
+    func refreshActivityList(){
+        activityApi().getAllActivities(apiBaseUrl: settings.apiBaseUrl) { (activities) in
+            self.activities = activities
+        }
+    }
+    
 }
 
 

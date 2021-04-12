@@ -6,11 +6,32 @@
 //
 
 import Foundation
+import SwiftUI
 
 struct Category: Codable {
     let id: Int
     let nom: String        
 }
+
+class CategoriesObs: ObservableObject {
+    @ObservedObject var settings = Settings()
+    @Published var categories: [Category] = []
+    
+    init(){
+        print("Init activities")
+        self.refreshCategoryList()
+    }
+    
+    func refreshCategoryList(){
+        categoryApi().getAllCategories(apiBaseUrl: settings.apiBaseUrl) { (categories) in
+            self.categories = categories
+            print("INIT CATEGOERIES : ")
+            print(categories)
+        }
+    }
+    
+}
+
 
 class categoryApi {
     func getAllCategories(apiBaseUrl:String, completion:@escaping ([Category]) -> ()) {
