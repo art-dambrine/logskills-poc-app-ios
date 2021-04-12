@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA28A16B262428790037468E /* TimerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA28A16A262428790037468E /* TimerManager.swift */; };
 		FA36F17026237D2A009FA024 /* PomodoroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA36F16F26237D2A009FA024 /* PomodoroView.swift */; };
 		FA397F9E26232764006CCC28 /* FormActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA397F9D26232764006CCC28 /* FormActivityView.swift */; };
 		FA397FA226232D56006CCC28 /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA397FA126232D56006CCC28 /* Activity.swift */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FA28A16A262428790037468E /* TimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerManager.swift; sourceTree = "<group>"; };
 		FA36F16F26237D2A009FA024 /* PomodoroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroView.swift; sourceTree = "<group>"; };
 		FA397F9D26232764006CCC28 /* FormActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormActivityView.swift; sourceTree = "<group>"; };
 		FA397FA126232D56006CCC28 /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
@@ -49,6 +51,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		FA28A16E262429C40037468E /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				FA28A16A262428790037468E /* TimerManager.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
 		FA6713D0262032C900E05128 = {
 			isa = PBXGroup;
 			children = (
@@ -71,6 +81,7 @@
 				FA6713DC262032C900E05128 /* LogskillsAppApp.swift */,
 				FAF005EB262305AE00EFB8CD /* Views */,
 				FAF005E92623057C00EFB8CD /* Model */,
+				FA28A16E262429C40037468E /* Service */,
 				FA6713E0262032CA00E05128 /* Assets.xcassets */,
 				FA6713E5262032CA00E05128 /* Info.plist */,
 				FA6713E2262032CA00E05128 /* Preview Content */,
@@ -180,6 +191,7 @@
 			files = (
 				FA6713ED262032F800E05128 /* SettingsView.swift in Sources */,
 				FA6713DF262032C900E05128 /* ContentView.swift in Sources */,
+				FA28A16B262428790037468E /* TimerManager.swift in Sources */,
 				FA6713F02620333900E05128 /* Category.swift in Sources */,
 				FAF005E6262302C800EFB8CD /* Settings.swift in Sources */,
 				FAF005EF262323AD00EFB8CD /* ListActivityView.swift in Sources */,

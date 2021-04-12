@@ -7,71 +7,6 @@
 
 import SwiftUI
 
-enum TimerMode {
-    case running
-    case paused
-    case initial
-}
-
-class TimerManager: ObservableObject {
-    
-    @Published var timerMode: TimerMode = .initial
-    
-    @Published var secondsLeft = UserDefaults.standard.integer(forKey: "timerlength")
-    
-    @Published var seconds: String = "00"
-    @Published var minutes: String = "00"
-    
-    var timer: Timer? = nil
-    
-    func startTimer(){
-        timerMode = .running
-        // 1. Make a new timer
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true){ tempTimer in
-            // 2. Check time to change values
-            if self.secondsLeft == 0 {
-                self.restartTimer()
-            }
-            
-            self.secondsLeft -= 1
-            
-            if (self.secondsLeft > 60) {
-                self.seconds = String(self.secondsLeft % 60)
-                if((self.secondsLeft / 60) < 10 ) {
-                    self.minutes = "0" + String(self.secondsLeft / 60)
-                } else {
-                    self.minutes = String(self.secondsLeft / 60)
-                }
-                
-            } else {
-                self.seconds = String(self.secondsLeft)
-                self.minutes = String("00")
-            }
-                        
-        }
-    }
-    
-    func stopTimer(){
-        timerMode = .paused
-        timer?.invalidate()
-        timer = nil
-    }
-    
-    func restartTimer(){
-        timerMode = .initial
-        self.secondsLeft = UserDefaults.standard.integer(forKey: "timerlength")
-        self.minutes = "00"
-        self.seconds = "00"
-    }
-    
-    func setTimerlength(minutes: Int){
-        UserDefaults.standard.set(minutes, forKey: "timerlength")
-        secondsLeft = minutes
-    }
-    
-}
-
-
 struct PomodoroView: View {
     
     @ObservedObject var timerManager = TimerManager()
@@ -97,7 +32,7 @@ struct PomodoroView: View {
                         
                         if timerManager.timerMode == .initial {
                             print(self.selectedPickerIndex)
-                            self.timerManager.setTimerlength(minutes: self.availableMinutes[self.selectedPickerIndex]*60)
+                            self.timerManager.setTimerlength(secondes: self.availableMinutes[self.selectedPickerIndex]*60)
                          }
                         
                         timerManager.startTimer()
