@@ -9,13 +9,21 @@ import SwiftUI
 
 struct PomodoroView: View {
     
+    @EnvironmentObject var settings: Settings
+    
     @ObservedObject var timerManager = TimerManager()
     
-    @State var selectedPickerIndex = 25 - 1
-    let availableMinutes = Array(1...45)
+    @State var selectedPickerIndex: Int = 0
+    @State var activities: [Activity] = []
+    @State var activitySelected: Activity?
+    
+    let defaultTimer = 25 // mins
+    let defaultPause = 5 // mins
+    let defaultNbRounds = 3 // 3 rounds
+    
     
     var body: some View {
-
+        
         ScrollView(.vertical){
             VStack {
                 
@@ -33,8 +41,8 @@ struct PomodoroView: View {
                             
                             if timerManager.timerMode == .initial {
                                 print(self.selectedPickerIndex)
-                                self.timerManager.setTimerlength(secondes: self.availableMinutes[self.selectedPickerIndex]*60)
-                             }
+                                self.timerManager.setTimerlength(secondes: (self.activitySelected?.temps_focus ?? 1) * 60)
+                            }
                             
                             timerManager.startTimer()
                             print("START")
@@ -48,19 +56,18 @@ struct PomodoroView: View {
                             
                         }
                         .padding(.all)
-                        
-                        
-                        Button(action:{
-                            timerManager.restartTimer()
-                            print("RESTART")
-                        }){
-                            Image(systemName: "backward.end.alt")
-                                .resizable()
-                                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
-                                .frame(width: 20, height: 20)
-                                .foregroundColor(.red)
-                        }
-                        .padding(.all)
+                                                
+//                        Button(action:{
+//                            timerManager.restartTimer()
+//                            print("RESTART")
+//                        }){
+//                            Image(systemName: "backward.end.alt")
+//                                .resizable()
+//                                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+//                                .frame(width: 20, height: 20)
+//                                .foregroundColor(.red)
+//                        }
+//                        .padding(.all)
                     }
                 } else {
                     Button(action:{
@@ -76,24 +83,60 @@ struct PomodoroView: View {
                     .padding(.all)
                 }
                 
+                // Infos sur l'activité selectionnée
+                if selectedPickerIndex != 0 {
+                    Text("Temps focus: \(self.activitySelected?.temps_focus ?? defaultTimer)")
+                    Text("Temps pause: \(self.activitySelected?.temps_pause ?? defaultPause)")
+                    Text("Nombre de rounds: \(self.activitySelected?.nb_round ?? defaultNbRounds)")
+                }
+                
                 if timerManager.timerMode == .initial {
                     
                     Picker(selection: $selectedPickerIndex, label: Text("")){
-                        ForEach(0 ..< availableMinutes.count) {
-                            Text("\(self.availableMinutes[$0]) min")
+                        ForEach(activities, id: \.self.id) { activity in
+                            Text("N°\(activity.id). " + activity.nom + "")
+                        }
+                    }
+                    .onReceive([self.selectedPickerIndex].publisher.first()) { (value) in
+                        // print(value)
+                        if value != 0 {
+                            self.activitySelected = activities.filter{ $0.id == value }[0]
                         }
                     }
                     .labelsHidden()
                     
+                } else {
+                    Button(action:{
+                        timerManager.stopTimer()
+                        timerManager.restartTimer()
+                        print("RESTART")
+                    }){
+                        Image(systemName: "backward.end.alt")
+                            .resizable()
+                            .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+                            .frame(width: 20, height: 20)
+                            .foregroundColor(.red)
+                    }
+                    .padding(.all)
                 }
+                                
                 
                 Spacer()
                 
             }
             .padding(.top,20)
+        } . onAppear() {
+            // availableActivities
+            activityApi().getAllActivities(apiBaseUrl: settings.apiBaseUrl) { (activities) in
+                self.activities = activities
+                if activities.count > 0 {
+                    selectedPickerIndex = activities[0].id
+                }                
+                // print(activities.map{$0.nom}) // -> ["Bureau dev", "Muscu light", "Le projeeetttt", "VTT en forêt"]
+            }
         }
-            
-                        
+        
+        
         
         
     }
