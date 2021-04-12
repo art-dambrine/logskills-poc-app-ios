@@ -32,7 +32,7 @@ struct FormActivityView: View {
     private var selectedActivity: Activity
     
     init(activityAlreadyExist: Bool = false,
-         selectedActivity: Activity = Activity(id: 0, nom: "", temps_focus: 0, temps_pause: 0, nb_round: 0, category: "")){
+         selectedActivity: Activity = Activity(id: 0, nom: "", temps_focus: 0, temps_pause: 0, nb_round: 0, id_categorie: 0)){
         
         self.activityAlreadyExist = activityAlreadyExist
         self.selectedActivity = selectedActivity
@@ -98,7 +98,7 @@ struct FormActivityView: View {
                                 temps_focus: Int(round(self.tempsFocus)),
                                 temps_pause: Int(round(self.tempsPause)),
                                 nb_round: self.nbRoundSelected,
-                                category: "/api/categories/" + String(categoryFilteredId)
+                                id_categorie: categoryFilteredId
                             )                                                        
                             
                             activityApi().postActivity(apiBaseUrl: settings.apiBaseUrl, activity: activity)
@@ -119,7 +119,7 @@ struct FormActivityView: View {
                                 temps_focus: Int(round(self.tempsFocus)),
                                 temps_pause: Int(round(self.tempsPause)),
                                 nb_round: self.nbRoundSelected,
-                                category: "/api/categories/" + String(categoryFilteredId)
+                                id_categorie: categoryFilteredId
                             )
                             
                             activityApi().updateActivity(apiBaseUrl: settings.apiBaseUrl, activity: activity)
@@ -178,11 +178,16 @@ struct FormActivityView: View {
                     self.activityName = selectedActivity.nom
                     
                     // print(self.selectedActivity)    // ->  category: "/api/categories/1"
-                    let array = self.selectedActivity.category.components(separatedBy: "/")
-                    let categoryId = Int(array[array.count - 1]) ?? 1
+//                    let array = self.selectedActivity.id_categorie.components(separatedBy: "/")
+//                    let categoryId = Int(array[array.count - 1]) ?? 1
                     
                     // Récupération de la categorie selectionnée par id
-                    self.selectedCategory = categories.filter{ $0.id == categoryId }[0].nom
+                    if (categories.filter{ $0.id == selectedActivity.id_categorie }.count > 0) {
+                        self.selectedCategory = categories.filter{ $0.id == selectedActivity.id_categorie }[0].nom
+                    } else {
+                        print ("ERROR { $0.id == selectedActivity.id_categorie }[0] out of range")
+                    }
+                    
                     
                 }
             }

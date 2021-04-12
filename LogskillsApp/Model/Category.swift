@@ -37,7 +37,7 @@ class categoryApi {
     func getAllCategories(apiBaseUrl:String, completion:@escaping ([Category]) -> ()) {
         let semaphore = DispatchSemaphore (value: 0)
         
-        guard let url = URL(string: apiBaseUrl+"/categories.json") else { return }
+        guard let url = URL(string: apiBaseUrl+"/categories") else { return }
         
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             
@@ -48,17 +48,17 @@ class categoryApi {
             }
             
             if let httpResponse = response as? HTTPURLResponse {
-                print("error \(httpResponse.statusCode)")
+                print("statusCode \(httpResponse.statusCode)")
                 
                 if (httpResponse.statusCode != 404) {
                     let categories = try! JSONDecoder().decode([Category].self, from: data)
-                    
+                    // print(categories)
                     DispatchQueue.main.async {
                         completion(categories)
                     }
                 }
                 
-            }                                    
+            }
             
                         
         }
