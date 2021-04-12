@@ -71,11 +71,11 @@ struct FormActivityView: View {
                 
                 Section(header: Text("Nombre de rounds")){
                     Picker("Select the number of rounds", selection: $nbRoundSelected) {
-                                    ForEach(rounds, id: \.self) {
-                                        Text(String($0))
-                                    }
-                                }
-                                .pickerStyle(SegmentedPickerStyle())
+                        ForEach(rounds, id: \.self) {
+                            Text(String($0))
+                        }
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
                 }
                 
                 Section {
@@ -87,10 +87,17 @@ struct FormActivityView: View {
                             let filtered = categories.filter{ $0.nom.contains(self.selectedCategory) }
                             let categoryFilteredId = filtered[0].id
                             
-                            let activity = Activity(id: 0, nom: self.activityName, temps_focus: Int(self.tempsFocus), temps_pause: Int(self.tempsPause), nb_round: self.nbRoundSelected, category: "/api/categories/" + String(categoryFilteredId))
-                                                    
+                            let activity = Activity(
+                                id: 0,
+                                nom: self.activityName,
+                                temps_focus: Int(round(self.tempsFocus)),
+                                temps_pause: Int(round(self.tempsPause)),
+                                nb_round: self.nbRoundSelected,
+                                category: "/api/categories/" + String(categoryFilteredId)
+                            )                                                        
+                            
                             activityApi().postActivity(apiBaseUrl: settings.apiBaseUrl, activity: activity)
-                                                                            
+                            
                             // return back to home view after 0.2 sec
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                 action: do {self.presentationMode.wrappedValue.dismiss()}
@@ -101,28 +108,35 @@ struct FormActivityView: View {
                             let filtered = categories.filter{ $0.nom.contains(self.selectedCategory) }
                             let categoryFilteredId = filtered[0].id
                             
-                            let activity = Activity(id: selectedActivity.id, nom: self.activityName, temps_focus: Int(self.tempsFocus), temps_pause: Int(self.tempsPause), nb_round: self.nbRoundSelected, category: "/api/categories/" + String(categoryFilteredId))
-                                                    
+                            let activity = Activity(
+                                id: self.selectedActivity.id,
+                                nom: self.activityName,
+                                temps_focus: Int(round(self.tempsFocus)),
+                                temps_pause: Int(round(self.tempsPause)),
+                                nb_round: self.nbRoundSelected,
+                                category: "/api/categories/" + String(categoryFilteredId)
+                            )
+                            
                             activityApi().updateActivity(apiBaseUrl: settings.apiBaseUrl, activity: activity)
-                                                                            
+                            
                             // return back to home view after 0.2 sec
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                 action: do {self.presentationMode.wrappedValue.dismiss()}
                             }
                         }
-                                                
+                        
                     }
                     
                     if activityAlreadyExist {
                         Button("Delete activity") {
-                                                    
+                            
                             activityApi().deleteActivity(apiBaseUrl: settings.apiBaseUrl, activityId: selectedActivity.id)
-                                                                            
+                            
                             // return back to home view after 0.2 sec
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                 action: do {self.presentationMode.wrappedValue.dismiss()}
                             }
-                                                    
+                            
                         }.foregroundColor(.red)
                     }
                 }
