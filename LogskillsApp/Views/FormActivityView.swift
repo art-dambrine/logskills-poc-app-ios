@@ -57,14 +57,14 @@ struct FormActivityView: View {
                 
                 Section(header: Text("Select temps de focus")){
                     HStack{
-                        Slider(value: $tempsFocus, in: 10...45)
+                        Slider(value: $tempsFocus, in: 1...45)
                         Text("\(tempsFocus, specifier: "%.f") minutes.")
                     }
                 }
                 
                 Section(header: Text("Select temps de pause")){
                     HStack{
-                        Slider(value: $tempsPause, in: 3...15)
+                        Slider(value: $tempsPause, in: 1...15)
                         Text("\(tempsPause, specifier: "%.f") minutes.")
                     }
                 }

@@ -28,12 +28,12 @@ struct ContentView: View {
                 PomodoroView()
                     .tabItem {
                         Image(systemName: "stopwatch.fill")
-                        Text("Pomodoro")
+                        Text("Chrono")
                     }
                 
                 Text("The content of Stats is coming soon..")
                     .tabItem {
-                        Image(systemName: "circle.fill")
+                        Image(systemName: "filemenu.and.selection")
                         Text("Stats")
                     }
             }
