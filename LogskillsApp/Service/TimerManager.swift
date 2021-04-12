@@ -169,7 +169,7 @@ class TimerManager: ObservableObject {
     }
     
     func clcTimeRemainingAfterComingBackFromBackground(timeElapsed: Int){
-        // Appelé par la vue lors d'un retour depuis le background si on était pas en pause au moment de quitter
+        // Appelé par la vue lors d'un retour depuis le background si on était pas en pause ou initial au moment de quitter
         // Besoin de :
         // temps écoulé = timeElapsed
         // temps total restant avant background = clcTotalRemainingTime()

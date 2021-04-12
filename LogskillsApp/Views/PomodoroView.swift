@@ -166,8 +166,9 @@ struct PomodoroView: View {
                 let timeElapsed = timeIntervalMovingBackToForeground - timeIntervalMovingToBackground
                 print("Tps timeElapsed : " + String(timeElapsed))
             
-                // Mettre à jour le temps du timerManager si on était pas en pause au moment de quitter
-                if(timerManager.timerMode != .paused && timerManager.timerMode != .pausedbreaktime){
+                // Mettre à jour le temps du timerManager si on était pas en pause ni en initial au moment de quitter
+                if(timerManager.timerMode != .paused && timerManager.timerMode != .pausedbreaktime
+                    && timerManager.timerMode != .initial){
                     timerManager.clcTimeRemainingAfterComingBackFromBackground(timeElapsed: timeElapsed)
                 }
             }
