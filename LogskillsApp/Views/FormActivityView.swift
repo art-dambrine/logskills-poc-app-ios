@@ -87,8 +87,11 @@ struct FormActivityView: View {
                             // Send POST data API :
                             // Récupération de l'id category à partir du nom
                             let filtered = categories.filter{ $0.nom.contains(self.selectedCategory) }
-                            let categoryFilteredId = filtered[0].id
-                            
+                            var categoryFilteredId = 0
+                            if (filtered.count>0) {
+                                categoryFilteredId = filtered[0].id
+                            }
+                                                        
                             let activity = Activity(
                                 id: 0,
                                 nom: self.activityName,
@@ -158,7 +161,9 @@ struct FormActivityView: View {
                     
                     if !activityAlreadyExist{
                         // Valeur par défaut pour le slider
-                        self.selectedCategory = categorySelectionList[0]
+                        if (categorySelectionList.count > 0) {
+                            self.selectedCategory = categorySelectionList[0]
+                        }
                     }
                     
 
