@@ -17,6 +17,23 @@ struct SettingsView: View {
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var apiUrl: String = ""
+    @State private var sound: String = ""
+    
+    @State private var isAlreadyInitialized = false
+    
+    private let soundManager = SoundManager()
+    
+    func saveChanges () {
+        user.username = username
+        user.password = password
+        settings.apiBaseUrl = apiUrl
+        settings.prefSound = sound
+        
+        UserDefaults.standard.set(username, forKey: "username")
+        UserDefaults.standard.set(password, forKey: "password")
+        UserDefaults.standard.set(apiUrl, forKey: "apiUrl")
+        UserDefaults.standard.set(sound, forKey: "sound")  
+    }
     
     var body: some View {
         
@@ -37,39 +54,32 @@ struct SettingsView: View {
                     TextField("BaseUrl", text: $apiUrl)
                 }
                 
-                Section {
-                    Button("Save changes") {
-                        user.username = username
-                        user.password = password
-                        settings.apiBaseUrl = apiUrl
-                        
-                        UserDefaults.standard.set(username, forKey: "username")
-                        UserDefaults.standard.set(password, forKey: "password")
-                        UserDefaults.standard.set(apiUrl, forKey: "apiUrl")
-                        
-                        // return back to home view after 0.2 sec
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                            action: do {self.presentationMode.wrappedValue.dismiss()}
+                Section(header: Text("Prefered end of round sound")){
+                    let possibilities = soundManager.getSoundPossibilities()
+                    
+                    Picker("Select sound", selection: $sound){
+                        ForEach(possibilities, id: \.self){
+                            Text($0)
+                                .font(.subheadline)
                         }
-                        
-                        
                     }
                 }
                 
+                
                 Section {
-                    Button("Authenticate") {
-                        user.username = username
-                        user.password = password
-                        settings.apiBaseUrl = apiUrl
+                    Button("Save changes & authenticate") {
                         
-                        UserDefaults.standard.set(username, forKey: "username")
-                        UserDefaults.standard.set(password, forKey: "password")
-                        UserDefaults.standard.set(apiUrl, forKey: "apiUrl")
+                        saveChanges()
                         
                         // Faire l'appel à l'api pour récuperer le token d'auth
                         apiUser().authenticate(apiBaseUrl: settings.apiBaseUrl, login: username, password: password, completion: { (token) in
                             // print(token.accessToken)
                             UserDefaults.standard.set(token.accessToken, forKey: "accessToken")
+                            
+                            // return back to home view after 0.2 sec
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                action: do {self.presentationMode.wrappedValue.dismiss()}
+                            }
                         }
 )
                                                 
@@ -80,9 +90,15 @@ struct SettingsView: View {
             }
             .navigationBarTitle("Settings")
             .onAppear(){
-                username = user.username
-                password = user.password
-                apiUrl = settings.apiBaseUrl
+                
+                if(!isAlreadyInitialized) {
+                    username = user.username
+                    password = user.password
+                    apiUrl = settings.apiBaseUrl
+                    sound = settings.prefSound
+                    isAlreadyInitialized = true
+                }
+                
             }
         }
     }

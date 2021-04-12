@@ -15,7 +15,7 @@ struct PomodoroView: View {
     @ObservedObject var timerManager = TimerManager()
     
     @State var selectedPickerIndex: Int = 0
-    @State var activitySelected: Activity?
+    @State var activitySelected: Activity?        
     
     let defaultTimer = 25 // mins
     let defaultPause = 5 // mins
@@ -43,7 +43,8 @@ struct PomodoroView: View {
                         self.timerManager.startTimerBackPreceeding(
                             nbRoundMaxParam: self.activitySelected?.nb_round ?? defaultNbRounds,
                             nbPauseMaxParam: (self.activitySelected?.nb_round ?? defaultNbRounds) - 1,
-                            pauseLengthParam: (self.activitySelected?.temps_pause ?? defaultPause) * multiplicateurSecondes
+                            pauseLengthParam: (self.activitySelected?.temps_pause ?? defaultPause) * multiplicateurSecondes,
+                            soundParam: settings.prefSound
                         )
                         
                         print("START")

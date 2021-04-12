@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import SwiftUI
 
 enum TimerMode {
     case running
@@ -33,6 +34,9 @@ class TimerManager: ObservableObject {
     var nbPauseMax = 2
     var pauseLength = 5
     
+    let soundManager = SoundManager()
+    var sound = "tone"
+    
     var backgroundTask: UIBackgroundTaskIdentifier = .invalid
     
     var timer: Timer? = nil
@@ -50,13 +54,17 @@ class TimerManager: ObservableObject {
     
     
     
-    func startTimerBackPreceeding(nbRoundMaxParam: Int, nbPauseMaxParam: Int, pauseLengthParam: Int){
+    func startTimerBackPreceeding(nbRoundMaxParam: Int, nbPauseMaxParam: Int, pauseLengthParam: Int, soundParam: String){
         
         self.nbRoundMax = nbRoundMaxParam
         self.nbPauseMax = nbPauseMaxParam
         self.pauseLength = pauseLengthParam
+        self.sound = soundParam
         
         timerMode = .running
+    
+        self.soundManager.playSound(sound: self.sound, type: "mp3")
+        self.displayHumanReadableTimer()
         
         self.roundCurrent = 1
         self.pauseCurrent = 0
@@ -90,6 +98,7 @@ class TimerManager: ObservableObject {
             if(self.roundCurrent == nbRoundMax && self.pauseCurrent == nbPauseMax){
                 
                 self.endTimer()
+                self.soundManager.playSound(sound: self.sound, type: "mp3")
                 
                 // Launch call to API to save completion
                 // ...
@@ -100,10 +109,14 @@ class TimerManager: ObservableObject {
                     self.pauseCurrent += 1
                     self.secondsLeft = pauseLength
                     self.timerMode = .breaktime
+                    self.soundManager.playSound(sound: self.sound, type: "mp3")
+                    self.displayHumanReadableTimer()
                 } else {
                     self.roundCurrent += 1
-                    self.secondsLeft = UserDefaults.standard.integer(forKey: "timerlength") + 1
+                    self.secondsLeft = UserDefaults.standard.integer(forKey: "timerlength")
                     self.timerMode = .running
+                    self.soundManager.playSound(sound: self.sound, type: "mp3")
+                    self.displayHumanReadableTimer()
                 }
                 
             }
@@ -130,7 +143,8 @@ class TimerManager: ObservableObject {
     
     
     func displayHumanReadableTimer(){
-        if (self.secondsLeft > 60) {
+        
+        if (self.secondsLeft >= 60) {
             
             if (self.secondsLeft % 60) < 10 {
                 self.seconds = "0" + String(self.secondsLeft % 60)

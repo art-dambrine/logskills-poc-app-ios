@@ -17,6 +17,12 @@
 		FA6713E4262032CA00E05128 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA6713E3262032CA00E05128 /* Preview Assets.xcassets */; };
 		FA6713ED262032F800E05128 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6713EC262032F800E05128 /* SettingsView.swift */; };
 		FA6713F02620333900E05128 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6713EF2620333900E05128 /* Category.swift */; };
+		FA971B352624B41E003BA931 /* SoundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA971B342624B41E003BA931 /* SoundManager.swift */; };
+		FA971B402624C1E3003BA931 /* tone.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FA971B3B2624C196003BA931 /* tone.mp3 */; };
+		FA971B482624C220003BA931 /* temple.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FA971B432624C220003BA931 /* temple.mp3 */; };
+		FA971B4A2624C220003BA931 /* metalgong.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FA971B452624C220003BA931 /* metalgong.mp3 */; };
+		FA971B4B2624C220003BA931 /* bikehorn.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FA971B462624C220003BA931 /* bikehorn.mp3 */; };
+		FA971B4C2624C220003BA931 /* doorbell.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FA971B472624C220003BA931 /* doorbell.mp3 */; };
 		FAF005DF2622FF2C00EFB8CD /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF005DE2622FF2C00EFB8CD /* User.swift */; };
 		FAF005E6262302C800EFB8CD /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF005E5262302C800EFB8CD /* Settings.swift */; };
 		FAF005EF262323AD00EFB8CD /* ListActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF005EE262323AD00EFB8CD /* ListActivityView.swift */; };
@@ -35,6 +41,12 @@
 		FA6713E5262032CA00E05128 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA6713EC262032F800E05128 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		FA6713EF2620333900E05128 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
+		FA971B342624B41E003BA931 /* SoundManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundManager.swift; sourceTree = "<group>"; };
+		FA971B3B2624C196003BA931 /* tone.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = tone.mp3; sourceTree = "<group>"; };
+		FA971B432624C220003BA931 /* temple.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = temple.mp3; sourceTree = "<group>"; };
+		FA971B452624C220003BA931 /* metalgong.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = metalgong.mp3; sourceTree = "<group>"; };
+		FA971B462624C220003BA931 /* bikehorn.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = bikehorn.mp3; sourceTree = "<group>"; };
+		FA971B472624C220003BA931 /* doorbell.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = doorbell.mp3; sourceTree = "<group>"; };
 		FAF005DE2622FF2C00EFB8CD /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		FAF005E5262302C800EFB8CD /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		FAF005EE262323AD00EFB8CD /* ListActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListActivityView.swift; sourceTree = "<group>"; };
@@ -55,6 +67,7 @@
 			isa = PBXGroup;
 			children = (
 				FA28A16A262428790037468E /* TimerManager.swift */,
+				FA971B342624B41E003BA931 /* SoundManager.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -83,6 +96,7 @@
 				FAF005E92623057C00EFB8CD /* Model */,
 				FA28A16E262429C40037468E /* Service */,
 				FA6713E0262032CA00E05128 /* Assets.xcassets */,
+				FA971B422624C1EF003BA931 /* Resource */,
 				FA6713E5262032CA00E05128 /* Info.plist */,
 				FA6713E2262032CA00E05128 /* Preview Content */,
 			);
@@ -95,6 +109,18 @@
 				FA6713E3262032CA00E05128 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		FA971B422624C1EF003BA931 /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				FA971B462624C220003BA931 /* bikehorn.mp3 */,
+				FA971B472624C220003BA931 /* doorbell.mp3 */,
+				FA971B452624C220003BA931 /* metalgong.mp3 */,
+				FA971B432624C220003BA931 /* temple.mp3 */,
+				FA971B3B2624C196003BA931 /* tone.mp3 */,
+			);
+			path = Resource;
 			sourceTree = "<group>";
 		};
 		FAF005E92623057C00EFB8CD /* Model */ = {
@@ -179,6 +205,11 @@
 			files = (
 				FA6713E4262032CA00E05128 /* Preview Assets.xcassets in Resources */,
 				FA6713E1262032CA00E05128 /* Assets.xcassets in Resources */,
+				FA971B402624C1E3003BA931 /* tone.mp3 in Resources */,
+				FA971B482624C220003BA931 /* temple.mp3 in Resources */,
+				FA971B4C2624C220003BA931 /* doorbell.mp3 in Resources */,
+				FA971B4A2624C220003BA931 /* metalgong.mp3 in Resources */,
+				FA971B4B2624C220003BA931 /* bikehorn.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -194,6 +225,7 @@
 				FA28A16B262428790037468E /* TimerManager.swift in Sources */,
 				FA6713F02620333900E05128 /* Category.swift in Sources */,
 				FAF005E6262302C800EFB8CD /* Settings.swift in Sources */,
+				FA971B352624B41E003BA931 /* SoundManager.swift in Sources */,
 				FAF005EF262323AD00EFB8CD /* ListActivityView.swift in Sources */,
 				FA36F17026237D2A009FA024 /* PomodoroView.swift in Sources */,
 				FA397F9E26232764006CCC28 /* FormActivityView.swift in Sources */,

@@ -8,5 +8,6 @@
 import Foundation
 
 class Settings: ObservableObject {
-    @Published var apiBaseUrl: String = UserDefaults.standard.string(forKey: "apiUrl") ?? "https://api.art-dambrine.ovh"    
+    @Published var apiBaseUrl: String = UserDefaults.standard.string(forKey: "apiUrl") ?? "https://api.art-dambrine.ovh"
+    @Published var prefSound: String = UserDefaults.standard.string(forKey: "sound") ?? "tone"
 }
