@@ -11,6 +11,7 @@ struct PomodoroView: View {
     
     @EnvironmentObject var activitiesObs: ActivitiesObs
     @EnvironmentObject var settings: Settings
+    @EnvironmentObject var appState: AppState
     
     @ObservedObject var timerManager = TimerManager()
     

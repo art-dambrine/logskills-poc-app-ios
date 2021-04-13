@@ -9,37 +9,46 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var isShowingDetailView = false
-    @ObservedObject var user = User()
-    @ObservedObject var settings = Settings()
     
-    @ObservedObject var activitiesObs = ActivitiesObs()
-    @ObservedObject var categoriesObs = CategoriesObs()
+    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var user: User
+    @EnvironmentObject var settings: Settings
+    @EnvironmentObject var activitiesObs: ActivitiesObs
+    @EnvironmentObject var CategoriesObs: CategoriesObs
     
     
     var body: some View {
         
         NavigationView{
-            TabView {
+            TabView(selection: $appState.selectedTab) {
                 
                 ListActivityView()
                     .tabItem {
                         Image(systemName: "list.star")
                         Text("Activites")
                     }
+                    .tag(0)
                 
                 PomodoroView()
                     .tabItem {
                         Image(systemName: "stopwatch.fill")
                         Text("Chrono")
                     }
+                    .tag(1)
                 
                 Text("The content of Stats is coming soon..")
                     .tabItem {
                         Image(systemName: "filemenu.and.selection")
                         Text("Stats")
                     }
+                    .tag(2)
             }
             .padding(.bottom,2)
+//            .onChange(of: appState.selectedTab, perform: { index in
+//                /// Example of event when we switch between tabs
+//                print("HELLO \(index)")
+//            })
+            
             
             .navigationBarItems(
                 trailing: HStack {
@@ -57,14 +66,7 @@ struct ContentView: View {
             )
             .navigationBarTitle("Logskills App")
             .navigationBarTitleDisplayMode(.inline)
-        }
-        
-        // Important à ajouter
-        .environmentObject(user)
-        .environmentObject(settings)
-        .environmentObject(activitiesObs)
-        .environmentObject(categoriesObs)
-        
+        }        
     }
 }
 
