@@ -14,6 +14,8 @@ struct PomodoroView: View {
     
     @ObservedObject var timerManager = TimerManager()
     
+    var notificationManager = NotificationManager()
+    
     @State var selectedPickerIndex: Int = 0
     @State var activitySelected: Activity?
     
@@ -24,7 +26,8 @@ struct PomodoroView: View {
     let defaultPause = 5 // mins
     let defaultNbRounds = 3 // 3 rounds        
     let multiplicateurSecondes = 1 // changer pendant le dev
-        
+    
+    
     
     var body: some View {
         
@@ -61,7 +64,7 @@ struct PomodoroView: View {
                         
                     }
                     .padding(.all)
-                             
+                    
                 }
             } else {
                 Button(action:{
@@ -146,32 +149,50 @@ struct PomodoroView: View {
         }
         .padding(20)
         .onAppear() {
+            // Si jamais effectué proposer la possibilité de recevoir des notifications
+            notificationManager.registerLocal()
+            
+            // Mise à jour de la ActivityList
             activitiesObs.refreshActivityList()
             if activitiesObs.activities.count > 0 {
                 self.selectedPickerIndex = activitiesObs.activities[0].id
             }                        
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
-                print("Moving to the background!")
-                // print(timerManager.secondsLeft)
-                let timeIntervalSince1970 = Date().timeIntervalSince1970
-                self.timeIntervalMovingToBackground = Int(round(timeIntervalSince1970))
-                
-            }
-        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-                print("Moving back to the foreground!")
-                // print(timerManager.secondsLeft)
-                let timeIntervalSince1970 = Date().timeIntervalSince1970
-                self.timeIntervalMovingBackToForeground = Int(round(timeIntervalSince1970))
-                let timeElapsed = timeIntervalMovingBackToForeground - timeIntervalMovingToBackground
-                print("Tps timeElapsed : " + String(timeElapsed))
+            print("Moving to the background!")
+            // print(timerManager.secondsLeft)
+            let timeIntervalSince1970 = Date().timeIntervalSince1970
+            self.timeIntervalMovingToBackground = Int(round(timeIntervalSince1970))
             
-                // Mettre à jour le temps du timerManager si on était pas en pause ni en initial au moment de quitter
-                if(timerManager.timerMode != .paused && timerManager.timerMode != .pausedbreaktime
-                    && timerManager.timerMode != .initial){
-                    timerManager.clcTimeRemainingAfterComingBackFromBackground(timeElapsed: timeElapsed)
-                }
+            // Enregistrement d'une notif
+            // Préparer les notifs si on était pas en pause ni en initial au moment de quitter
+            if(timerManager.timerMode != .paused && timerManager.timerMode != .pausedbreaktime
+                && timerManager.timerMode != .initial){
+                // Enregistre pour rappeler l'utilisateur à la fin du timer en cours
+                notificationManager.scheduleLocal(
+                    triggerTimeInterval: self.timerManager.secondsLeft,
+                    currentIsRound: (timerManager.timerMode == .running)
+                )
             }
+            
+            
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+            print("Moving back to the foreground!")
+            notificationManager.removeAllPendingNotification()
+            
+            // print(timerManager.secondsLeft)
+            let timeIntervalSince1970 = Date().timeIntervalSince1970
+            self.timeIntervalMovingBackToForeground = Int(round(timeIntervalSince1970))
+            let timeElapsed = timeIntervalMovingBackToForeground - timeIntervalMovingToBackground
+            print("Tps timeElapsed : " + String(timeElapsed))
+            
+            // Mettre à jour le temps du timerManager si on était pas en pause ni en initial au moment de quitter
+            if(timerManager.timerMode != .paused && timerManager.timerMode != .pausedbreaktime
+                && timerManager.timerMode != .initial){
+                timerManager.clcTimeRemainingAfterComingBackFromBackground(timeElapsed: timeElapsed)
+            }
+        }
         
     }
 }
