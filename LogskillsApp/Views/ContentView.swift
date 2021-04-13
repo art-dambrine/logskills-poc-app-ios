@@ -14,7 +14,7 @@ struct ContentView: View {
     @EnvironmentObject var user: User
     @EnvironmentObject var settings: Settings
     @EnvironmentObject var activitiesObs: ActivitiesObs
-    @EnvironmentObject var CategoriesObs: CategoriesObs
+    @EnvironmentObject var categoriesObs: CategoriesObs
     
     
     var body: some View {
@@ -44,6 +44,7 @@ struct ContentView: View {
                     .tag(2)
             }
             .padding(.bottom,2)
+            .offset(y: (appState.timerIsRunning && appState.selectedTab == 1) ? 50 : 0 )
 //            .onChange(of: appState.selectedTab, perform: { index in
 //                /// Example of event when we switch between tabs
 //                print("HELLO \(index)")
@@ -66,7 +67,8 @@ struct ContentView: View {
             )
             .navigationBarTitle("Logskills App")
             .navigationBarTitleDisplayMode(.inline)
-        }        
+        }
+        
     }
 }
 

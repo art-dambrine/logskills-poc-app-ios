@@ -240,7 +240,7 @@ class TimerManager: ObservableObject {
         self.timer = nil
     }
     
-    func restartTimer(){
+    func resetTimer(){
         // Si on est hors du breaktime on reinitialise sinon on laisse breaktime
         if(timerMode != .breaktime){
             timerMode = .initial

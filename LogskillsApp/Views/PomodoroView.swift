@@ -129,7 +129,7 @@ struct PomodoroView: View {
             } else {
                 Button(action:{
                     self.timerManager.stopTimer()
-                    self.timerManager.restartTimer()
+                    self.timerManager.resetTimer()
                     print("RESTART")
                 }){
                     Image(systemName: "backward.end.alt")
@@ -168,10 +168,32 @@ struct PomodoroView: View {
             
             Spacer()
             
+            if (self.timerManager.timerMode == .initial){
+                
+                Button("Retour aux activites"){
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                        appState.timerIsRunning = false
+                        appState.selectedTab = 0
+                    }
+                    
+                }
+            }
+            
+            
         }
+        .offset(y: (appState.timerIsRunning && appState.selectedTab == 1)  ? -60 : 0 ) // offset à l'apparition de la vue
+        .offset(y: (self.timerManager.timerMode != .initial)  ? -30 : 0 ) // offset au lancement du timer
         .padding(20)
+        .onDisappear {
+            self.timerManager.stopTimer()
+            self.timerManager.resetTimer()
+            print("QUIT VIEW POMODORO")        
+        }
         .onAppear() {
             // Si jamais effectué proposer la possibilité de recevoir des notifications
+            appState.timerIsRunning = true
+            
             notificationManager.registerLocal()
             
             // Mise à jour de la ActivityList
@@ -218,7 +240,7 @@ struct PomodoroView: View {
                 }
                 
                 
-             } // -> end of if(timerManager.timerMode != .pau...
+            } // -> end of if(timerManager.timerMode != .pau...
             
             
         }
@@ -256,7 +278,7 @@ struct PomodoroView: View {
         var notif: NotifParams
         
         print("NbNotifTosend = \(clcNbNotifToSend())")
-                
+        
         if(nbNotifToSend > 1) {
             if (count == 0) {
                 
@@ -264,20 +286,20 @@ struct PomodoroView: View {
                     // On est en round
                     // Notif du round en cours
                     notif = NotifParams(id: count,
-                                            triggerTimeInterval: self.timerManager.secondsLeft,
-                                            isRoundNotif: isVirtualRound, // true
-                                            notifRoundOrPauseCurrent: virtualRoundCurrent,
-                                            notifRoundOrPauseMax: self.timerManager.nbRoundMax,
-                                            isEndOfPomodoro: false)
+                                        triggerTimeInterval: self.timerManager.secondsLeft,
+                                        isRoundNotif: isVirtualRound, // true
+                                        notifRoundOrPauseCurrent: virtualRoundCurrent,
+                                        notifRoundOrPauseMax: self.timerManager.nbRoundMax,
+                                        isEndOfPomodoro: false)
                 } else {
                     // On est en pause
                     // Notif de pause en cours
                     notif = NotifParams(id: count,
-                                            triggerTimeInterval: self.timerManager.secondsLeft,
-                                            isRoundNotif: isVirtualRound, // false
-                                            notifRoundOrPauseCurrent: virtualPauseCurrent,
-                                            notifRoundOrPauseMax: self.timerManager.nbPauseMax,
-                                            isEndOfPomodoro: false)
+                                        triggerTimeInterval: self.timerManager.secondsLeft,
+                                        isRoundNotif: isVirtualRound, // false
+                                        notifRoundOrPauseCurrent: virtualPauseCurrent,
+                                        notifRoundOrPauseMax: self.timerManager.nbPauseMax,
+                                        isEndOfPomodoro: false)
                 }
                 
                 notifParamsTab.append(notif)
@@ -293,20 +315,20 @@ struct PomodoroView: View {
                     virtualPauseCurrent += 1
                     notif = NotifParams(id: count,
                                         triggerTimeInterval: notifParamsTab[count-1].triggerTimeInterval + self.timerManager.pauseLength,
-                                            isRoundNotif: isVirtualRound, // false
-                                            notifRoundOrPauseCurrent: virtualPauseCurrent,
-                                            notifRoundOrPauseMax: self.timerManager.nbPauseMax,
-                                            isEndOfPomodoro: false)
+                                        isRoundNotif: isVirtualRound, // false
+                                        notifRoundOrPauseCurrent: virtualPauseCurrent,
+                                        notifRoundOrPauseMax: self.timerManager.nbPauseMax,
+                                        isEndOfPomodoro: false)
                 } else {
                     // code temps avec round
                     virtualRoundCurrent += 1
                     
                     notif = NotifParams(id: count,
                                         triggerTimeInterval: notifParamsTab[count-1].triggerTimeInterval + self.timerManager.roundLength,
-                                            isRoundNotif: isVirtualRound, // true
-                                            notifRoundOrPauseCurrent: virtualRoundCurrent,
-                                            notifRoundOrPauseMax: self.timerManager.nbRoundMax,
-                                            isEndOfPomodoro: false)
+                                        isRoundNotif: isVirtualRound, // true
+                                        notifRoundOrPauseCurrent: virtualRoundCurrent,
+                                        notifRoundOrPauseMax: self.timerManager.nbRoundMax,
+                                        isEndOfPomodoro: false)
                 }
                 // don't forget
                 notifParamsTab.append(notif)
@@ -318,11 +340,11 @@ struct PomodoroView: View {
             // Last notif :
             notif = NotifParams(id: count,
                                 triggerTimeInterval: notifParamsTab[count-1].triggerTimeInterval + self.timerManager.roundLength,
-                                    isRoundNotif: true, // true
-                                    notifRoundOrPauseCurrent: self.timerManager.nbRoundMax,
-                                    notifRoundOrPauseMax: self.timerManager.nbRoundMax,
-                                    isEndOfPomodoro: true)
-        
+                                isRoundNotif: true, // true
+                                notifRoundOrPauseCurrent: self.timerManager.nbRoundMax,
+                                notifRoundOrPauseMax: self.timerManager.nbRoundMax,
+                                isEndOfPomodoro: true)
+            
             notifParamsTab.append(notif)
             
         } else {
@@ -334,7 +356,7 @@ struct PomodoroView: View {
                                 notifRoundOrPauseCurrent: self.timerManager.nbRoundMax,
                                 notifRoundOrPauseMax: self.timerManager.nbRoundMax,
                                 isEndOfPomodoro: true)
-        
+            
             notifParamsTab.append(notif)
             
         }
