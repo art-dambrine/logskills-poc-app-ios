@@ -11,8 +11,8 @@ import SwiftUI
 struct Activity: Codable {
     let id: Int
     let nom: String
-    let temps_focus: Int
-    let temps_pause: Int
+    let temps_focus: Int // En minutes
+    let temps_pause: Int // En minutes
     let nb_round: Int
     let id_categorie: Int
 }
@@ -69,8 +69,9 @@ class activityApi {
                 }
             }
             
+            // Print pour du retour de data pour le debug :
             
-            print(String(data: data, encoding: .utf8)!)
+            //print(String(data: data, encoding: .utf8)!)
             semaphore.signal()
         }
         

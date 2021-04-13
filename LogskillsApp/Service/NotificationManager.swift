@@ -8,6 +8,15 @@
 import Foundation
 import UserNotifications
 
+struct NotifParams {
+    let id: Int
+    let triggerTimeInterval: Int
+    let isRoundNotif: Bool
+    let notifRoundOrPauseCurrent: Int
+    let notifRoundOrPauseMax: Int
+    let isEndOfPomodoro: Bool
+}
+
 class NotificationManager {
     
     @objc func registerLocal() {
@@ -22,20 +31,35 @@ class NotificationManager {
         }
     }
     
-    @objc func scheduleLocal(triggerTimeInterval: Int, currentIsRound: Bool) {
+    @objc func scheduleLocal(triggerTimeInterval: Int, currentIsRound: Bool = false,
+                             nbOfCurrentRoundOrPause: Int = 0, nbOfMaxRoundOrPause: Int = 0, isEndOfPomodoro: Bool = false) {
+        
         let center = UNUserNotificationCenter.current()
 
         let content = UNMutableNotificationContent()
         
-        if(currentIsRound){
-            content.title = "Fin du round!"
-            content.body = "Revenez sur l'application et pensez à prendre une pause."
-            
+        if(!isEndOfPomodoro){
+            if(currentIsRound){
+                // Fin d'un round
+                content.title = "Fin du round \(nbOfCurrentRoundOrPause)/\(nbOfMaxRoundOrPause) !"
+                
+                if (nbOfCurrentRoundOrPause == nbOfMaxRoundOrPause) {
+                    content.body = "Fin de la session revenez sur l'app pour enregistrer la progression."
+                } else {
+                    content.body = "Revenez sur l'application et pensez à prendre une pause."
+                }
+                
+            } else {
+                // Fin d'une pause
+                content.title = "Fin de la pause \(nbOfCurrentRoundOrPause)/\(nbOfMaxRoundOrPause) !"
+                content.body = "Retour en mode mode focus, let's go !"
+            }
         } else {
-            // Si on était en pause au moment de verouiller
-            content.title = "Fin de la pause!"
-            content.body = "Retour en mode mode focus, let's go!"
+            // Fin du pomodoro complet
+            content.title = "Fin de la session !"
+            content.body = "Revenez sur l'app pour enregistrer la progression."
         }
+        
         
         
         content.categoryIdentifier = "alarm"

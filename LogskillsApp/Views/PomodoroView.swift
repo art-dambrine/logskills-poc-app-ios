@@ -25,11 +25,10 @@ struct PomodoroView: View {
     let defaultTimer = 25 // mins
     let defaultPause = 5 // mins
     let defaultNbRounds = 3 // 3 rounds        
-    let multiplicateurSecondes = 1 // changer pendant le dev
+    let multiplicateurSecondes = 60 // changer : pendant le dev à 1sec et à 60sec en prod
     
     
-    
-    var body: some View {
+    var body: some View {        
         
         VStack {
             
@@ -64,6 +63,28 @@ struct PomodoroView: View {
                         
                     }
                     .padding(.all)
+                    .alert(isPresented: $timerManager.pomodoroIsFinished) {
+                        Alert(
+                            title: Text("Activité complétée, félicitation !"),
+                            message: Text("Souhaitez vous sauvegarder votre progression ?"),
+                            primaryButton: .default(Text("Sauvegarder")){
+                                print("Sauvegarder appel à l'API...")
+                                // Sauvegarde du log sur l'API
+                                logsApi().createLog(
+                                    apiBaseUrl: settings.apiBaseUrl,
+                                    log: Logs(id: 0,
+                                              temps_total: timerManager.clcTempsTotalSeconds(
+                                                nbRoundRestant: self.activitySelected?.nb_round ?? defaultNbRounds,
+                                                nbPauseRestant: (self.activitySelected?.nb_round ?? defaultNbRounds) - 1
+                                              ) / multiplicateurSecondes,
+                                              temps_actif: timerManager.clcTempsActifSeconds(nbRoundRestant: self.activitySelected?.nb_round ?? defaultNbRounds) / multiplicateurSecondes,
+                                              id_activite: self.activitySelected?.id ?? 0
+                                    )
+                                )
+                            },
+                            secondaryButton: .cancel()
+                        )
+                    }
                     
                 }
             } else {
@@ -164,16 +185,39 @@ struct PomodoroView: View {
             let timeIntervalSince1970 = Date().timeIntervalSince1970
             self.timeIntervalMovingToBackground = Int(round(timeIntervalSince1970))
             
+            
+            
             // Enregistrement d'une notif
             // Préparer les notifs si on était pas en pause ni en initial au moment de quitter
             if(timerManager.timerMode != .paused && timerManager.timerMode != .pausedbreaktime
                 && timerManager.timerMode != .initial){
-                // Enregistre pour rappeler l'utilisateur à la fin du timer en cours
-                notificationManager.scheduleLocal(
-                    triggerTimeInterval: self.timerManager.secondsLeft,
-                    currentIsRound: (timerManager.timerMode == .running)
-                )
-            }
+
+                // Enregistre les notifs pour alerter l'utilisateur que le round / pause / session est terminé
+                
+                print("Total remaining time : \(self.timerManager.clcTotalRemainingTimeSeconds())")
+                                
+                print("==== ================ ====")
+                print("== Vérifier les valeurs ==")
+                print("==== ================ ====")
+                print("")
+                
+                let notifParamsTab: [NotifParams] = prepareAllNotifsToSend()
+                
+                print("Préparation des notifications suivantes :")
+                print(notifParamsTab)
+                
+                for notifParams in notifParamsTab {
+                    notificationManager.scheduleLocal(
+                        triggerTimeInterval: notifParams.triggerTimeInterval,
+                        currentIsRound: notifParams.isRoundNotif,
+                        nbOfCurrentRoundOrPause: notifParams.notifRoundOrPauseCurrent,
+                        nbOfMaxRoundOrPause: notifParams.notifRoundOrPauseMax,
+                        isEndOfPomodoro: notifParams.isEndOfPomodoro
+                    )
+                }
+                
+                
+             } // -> end of if(timerManager.timerMode != .pau...
             
             
         }
@@ -195,6 +239,108 @@ struct PomodoroView: View {
         }
         
     }
+    
+    
+    func clcNbNotifToSend() -> Int {
+        return (self.timerManager.nbRoundMax - self.timerManager.roundCurrent) + (self.timerManager.nbPauseMax - self.timerManager.pauseCurrent) + 1
+    }
+    
+    func prepareAllNotifsToSend() -> [NotifParams] {
+        let nbNotifToSend = clcNbNotifToSend()
+        var notifParamsTab: [NotifParams] = []
+        var count = 0
+        var virtualRoundCurrent = self.timerManager.roundCurrent
+        var virtualPauseCurrent = self.timerManager.pauseCurrent
+        var isVirtualRound = (self.timerManager.roundCurrent > self.timerManager.pauseCurrent) // true si on est en cours de round
+        var notif: NotifParams
+        
+        print("NbNotifTosend = \(clcNbNotifToSend())")
+                
+        if(nbNotifToSend > 1) {
+            if (count == 0) {
+                
+                if(isVirtualRound){
+                    // On est en round
+                    // Notif du round en cours
+                    notif = NotifParams(id: count,
+                                            triggerTimeInterval: self.timerManager.secondsLeft,
+                                            isRoundNotif: isVirtualRound, // true
+                                            notifRoundOrPauseCurrent: virtualRoundCurrent,
+                                            notifRoundOrPauseMax: self.timerManager.nbRoundMax,
+                                            isEndOfPomodoro: false)
+                } else {
+                    // On est en pause
+                    // Notif de pause en cours
+                    notif = NotifParams(id: count,
+                                            triggerTimeInterval: self.timerManager.secondsLeft,
+                                            isRoundNotif: isVirtualRound, // false
+                                            notifRoundOrPauseCurrent: virtualPauseCurrent,
+                                            notifRoundOrPauseMax: self.timerManager.nbPauseMax,
+                                            isEndOfPomodoro: false)
+                }
+                
+                notifParamsTab.append(notif)
+                count += 1
+                isVirtualRound.toggle() // isVirtualRound sera à false
+            }
+            
+            // On sera en pause puis en round puis en pause faire la boucle
+            while (count != (nbNotifToSend - 1)) {
+                // code here
+                if(!isVirtualRound){
+                    // code temps avec position en pause
+                    virtualPauseCurrent += 1
+                    notif = NotifParams(id: count,
+                                        triggerTimeInterval: notifParamsTab[count-1].triggerTimeInterval + self.timerManager.pauseLength,
+                                            isRoundNotif: isVirtualRound, // false
+                                            notifRoundOrPauseCurrent: virtualPauseCurrent,
+                                            notifRoundOrPauseMax: self.timerManager.nbPauseMax,
+                                            isEndOfPomodoro: false)
+                } else {
+                    // code temps avec round
+                    virtualRoundCurrent += 1
+                    
+                    notif = NotifParams(id: count,
+                                        triggerTimeInterval: notifParamsTab[count-1].triggerTimeInterval + self.timerManager.roundLength,
+                                            isRoundNotif: isVirtualRound, // true
+                                            notifRoundOrPauseCurrent: virtualRoundCurrent,
+                                            notifRoundOrPauseMax: self.timerManager.nbRoundMax,
+                                            isEndOfPomodoro: false)
+                }
+                // don't forget
+                notifParamsTab.append(notif)
+                count += 1
+                isVirtualRound.toggle()
+            }
+            
+            // Dernière notif à setup count == nbNotifToSend
+            // Last notif :
+            notif = NotifParams(id: count,
+                                triggerTimeInterval: notifParamsTab[count-1].triggerTimeInterval + self.timerManager.roundLength,
+                                    isRoundNotif: true, // true
+                                    notifRoundOrPauseCurrent: self.timerManager.nbRoundMax,
+                                    notifRoundOrPauseMax: self.timerManager.nbRoundMax,
+                                    isEndOfPomodoro: true)
+        
+            notifParamsTab.append(notif)
+            
+        } else {
+            
+            // Dernière et unique notif à setup
+            notif = NotifParams(id: count,
+                                triggerTimeInterval: self.timerManager.secondsLeft,
+                                isRoundNotif: true, // true
+                                notifRoundOrPauseCurrent: self.timerManager.nbRoundMax,
+                                notifRoundOrPauseMax: self.timerManager.nbRoundMax,
+                                isEndOfPomodoro: true)
+        
+            notifParamsTab.append(notif)
+            
+        }
+        
+        return notifParamsTab
+    }
+    
 }
 
 struct PomodoroView_Previews: PreviewProvider {

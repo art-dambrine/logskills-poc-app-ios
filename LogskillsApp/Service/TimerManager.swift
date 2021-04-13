@@ -14,6 +14,7 @@ enum TimerMode {
     case initial
     case breaktime
     case pausedbreaktime
+    case finished
 }
 
 class TimerManager: ObservableObject {
@@ -30,19 +31,26 @@ class TimerManager: ObservableObject {
     
     var nbRoundMax = 3
     var nbPauseMax = 2
-    var pauseLength = 5
-    var roundLength = 25
+    var pauseLength = 5 * 60 // secondes
+    var roundLength = 25 * 60 // secondes
     
     let soundManager = SoundManager()
     var sound = "tone"
     
     var timer: Timer? = nil
     
-    let multiplicateurSecondes = 1 // changer pendant le dev
+    
+    
+    @Published var pomodoroIsFinished: Bool = false {
+        didSet{
+            print("pomodoroIsFinished changed to \(pomodoroIsFinished)")
+        }
+    }
     
     
     func startTimerBackPreceeding(nbRoundMaxParam: Int, nbPauseMaxParam: Int, pauseLengthParam: Int, soundParam: String){
         // Fonction pivot pour lancer le timer appel en premier par la vue
+        self.pomodoroIsFinished = false
         
         // Initialisation des valeurs max passées par la vue
         self.nbRoundMax = nbRoundMaxParam
@@ -82,7 +90,7 @@ class TimerManager: ObservableObject {
         self.secondsLeft -= 1
         
         self.displayHumanReadableTimer()
-                
+        
         if self.secondsLeft == 0 {
             
             if(self.roundCurrent == nbRoundMax && self.pauseCurrent == nbPauseMax){
@@ -127,6 +135,8 @@ class TimerManager: ObservableObject {
     
     func pomodoroCompleted(){
         // On peut ici terminer le timer
+        self.pomodoroIsFinished = true
+        
         self.endTimer()
         self.soundManager.playSound(sound: self.sound, type: "mp3")
         
@@ -155,16 +165,27 @@ class TimerManager: ObservableObject {
         } else {
             print("ERROR : call de changementRoundOrPauseTimer lorsque secondsLeft != 0")
         }
-                
+        
     }
     
+    func clcTempsActifSeconds(nbRoundRestant: Int) -> Int{
+        let result = nbRoundRestant * self.roundLength
+        return result
+    }
     
-    func clcTotalRemainingTime() -> Int{
+    func clcTempsTotalSeconds(nbRoundRestant: Int, nbPauseRestant:Int) -> Int{
+        let result = nbRoundRestant * self.roundLength + nbPauseRestant * self.pauseLength
+        return result
+    }
+    
+    func clcTotalRemainingTimeSeconds() -> Int{
         // Appelé par clcTimeRemainingAfterComingBackFromBackground
         let nbRoundRestant = (self.nbRoundMax - self.roundCurrent)
         let nbPauseRestant = (self.nbPauseMax - self.pauseCurrent)
-        let result = nbRoundRestant * self.roundLength + nbPauseRestant * (self.pauseLength * self.multiplicateurSecondes) + self.secondsLeft
-        // print("Result = \(nbRoundRestant) * \(self.roundLength) + \(nbPauseRestant) * \(self.pauseLength * self.multiplicateurSecondes) + \(self.secondsLeft) = \(result)")
+        
+        // result = nbRoundRestant * self.roundLength + nbPauseRestant * (self.pauseLength * self.multiplicateurSecondes) + self.secondsLeft
+        let result = nbRoundRestant * self.roundLength  + nbPauseRestant * self.pauseLength + self.secondsLeft
+        
         return result
     }
     
@@ -176,7 +197,7 @@ class TimerManager: ObservableObject {
         // print("Temps total restant avant soustraction : \(self.clcTotalRemainingTime())")
         var timeElapsedToDrain = timeElapsed
         
-        let totalRemainingBeforeBack = clcTotalRemainingTime()
+        let totalRemainingBeforeBack = clcTotalRemainingTimeSeconds()
         if(timeElapsed >= totalRemainingBeforeBack) {
             print("Fin du pomodoro, complété ou oublié")
             pomodoroCompleted()

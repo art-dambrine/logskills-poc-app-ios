@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA14E53E2625F788001316D4 /* Logs.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA14E53D2625F787001316D4 /* Logs.swift */; };
 		FA28A16B262428790037468E /* TimerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA28A16A262428790037468E /* TimerManager.swift */; };
 		FA36F17026237D2A009FA024 /* PomodoroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA36F16F26237D2A009FA024 /* PomodoroView.swift */; };
 		FA397F9E26232764006CCC28 /* FormActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA397F9D26232764006CCC28 /* FormActivityView.swift */; };
@@ -30,6 +31,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FA14E53D2625F787001316D4 /* Logs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logs.swift; sourceTree = "<group>"; };
 		FA28A16A262428790037468E /* TimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerManager.swift; sourceTree = "<group>"; };
 		FA36F16F26237D2A009FA024 /* PomodoroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroView.swift; sourceTree = "<group>"; };
 		FA397F9D26232764006CCC28 /* FormActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormActivityView.swift; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 				FAF005E5262302C800EFB8CD /* Settings.swift */,
 				FA6713EF2620333900E05128 /* Category.swift */,
 				FA397FA126232D56006CCC28 /* Activity.swift */,
+				FA14E53D2625F787001316D4 /* Logs.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -233,6 +236,7 @@
 				FAF005EF262323AD00EFB8CD /* ListActivityView.swift in Sources */,
 				FA36F17026237D2A009FA024 /* PomodoroView.swift in Sources */,
 				FA397F9E26232764006CCC28 /* FormActivityView.swift in Sources */,
+				FA14E53E2625F788001316D4 /* Logs.swift in Sources */,
 				FA397FA226232D56006CCC28 /* Activity.swift in Sources */,
 				FAF005DF2622FF2C00EFB8CD /* User.swift in Sources */,
 				FA6713DD262032C900E05128 /* LogskillsAppApp.swift in Sources */,
