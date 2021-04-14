@@ -171,26 +171,12 @@ struct PomodoroView: View {
             
             Spacer()
             
-            if (self.timerManager.timerMode == .initial){
-                
-                Button("Retour aux activites"){
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        appState.timerIsRunning = false
-                        appState.selectedTab = 0
-                    }
-                    
-                }
-            }
-            
-            
+                        
         }
 //        .offset(y: (appState.timerIsRunning && appState.selectedTab == 1)  ? -50 : 0 ) // offset à l'apparition de la vue
 //        .offset(y: (self.timerManager.timerMode != .initial)  ? -30 : 0 ) // offset au lancement du timer
         .padding(20)
         .onDisappear {
-            //            self.timerManager.stopTimer()
-            //            self.timerManager.resetTimer()
             print("QUIT VIEW POMODORO")        
         }
         .onAppear() {
