@@ -12,13 +12,12 @@ struct PomodoroView: View {
     @EnvironmentObject var activitiesObs: ActivitiesObs
     @EnvironmentObject var settings: Settings
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var timerManager: TimerManager
     
-    @ObservedObject var timerManager = TimerManager()
     
     var notificationManager = NotificationManager()
     
-    @State var selectedPickerIndex: Int = 0
-    @State var activitySelected: Activity?
+    @State private var selectedPickerIndex: Int = 0
     
     @State var timeIntervalMovingToBackground = 0
     @State var timeIntervalMovingBackToForeground = 0
@@ -26,7 +25,7 @@ struct PomodoroView: View {
     let defaultTimer = 25 // mins
     let defaultPause = 5 // mins
     let defaultNbRounds = 3 // 3 rounds        
-    let multiplicateurSecondes = 60 // changer : pendant le dev à 1sec et à 60sec en prod
+    let multiplicateurSecondes = 1 // changer : pendant le dev à 1sec et à 60sec en prod
     
     
     var body: some View {        
@@ -43,13 +42,13 @@ struct PomodoroView: View {
                         
                         if self.timerManager.timerMode == .initial {
                             print(self.selectedPickerIndex)
-                            self.timerManager.setTimerlength(secondes: (self.activitySelected?.temps_focus ?? 1) * multiplicateurSecondes)
+                            self.timerManager.setTimerlength(secondes: (appState.activitySelected?.temps_focus ?? 1) * multiplicateurSecondes)
                         }                        
                         
                         self.timerManager.startTimerBackPreceeding(
-                            nbRoundMaxParam: self.activitySelected?.nb_round ?? defaultNbRounds,
-                            nbPauseMaxParam: (self.activitySelected?.nb_round ?? defaultNbRounds) - 1,
-                            pauseLengthParam: (self.activitySelected?.temps_pause ?? defaultPause) * multiplicateurSecondes,
+                            nbRoundMaxParam: appState.activitySelected?.nb_round ?? defaultNbRounds,
+                            nbPauseMaxParam: (appState.activitySelected?.nb_round ?? defaultNbRounds) - 1,
+                            pauseLengthParam: (appState.activitySelected?.temps_pause ?? defaultPause) * multiplicateurSecondes,
                             soundParam: settings.prefSound
                         )
                         
@@ -67,7 +66,7 @@ struct PomodoroView: View {
                     .alert(isPresented: $timerManager.pomodoroIsFinished) {
                         Alert(
                             title: Text("Activité complétée, félicitation !"),
-                            message: Text("Souhaitez vous sauvegarder votre progression ?"),
+                            message: Text("Enregistrer votre progression de \(appState.activitySelected?.nom ?? "...") ?"),
                             primaryButton: .default(Text("Sauvegarder")){
                                 print("Sauvegarder appel à l'API...")
                                 // Sauvegarde du log sur l'API
@@ -75,11 +74,11 @@ struct PomodoroView: View {
                                     apiBaseUrl: settings.apiBaseUrl,
                                     log: Logs(id: 0,
                                               temps_total: timerManager.clcTempsTotalSeconds(
-                                                nbRoundRestant: self.activitySelected?.nb_round ?? defaultNbRounds,
-                                                nbPauseRestant: (self.activitySelected?.nb_round ?? defaultNbRounds) - 1
+                                                nbRoundRestant: appState.activitySelected?.nb_round ?? defaultNbRounds,
+                                                nbPauseRestant: (appState.activitySelected?.nb_round ?? defaultNbRounds) - 1
                                               ) / multiplicateurSecondes,
-                                              temps_actif: timerManager.clcTempsActifSeconds(nbRoundRestant: self.activitySelected?.nb_round ?? defaultNbRounds) / multiplicateurSecondes,
-                                              id_activite: self.activitySelected?.id ?? 0
+                                              temps_actif: timerManager.clcTempsActifSeconds(nbRoundRestant: appState.activitySelected?.nb_round ?? defaultNbRounds) / multiplicateurSecondes,
+                                              id_activite: appState.activitySelected?.id ?? 0
                                     )
                                 )
                             },
@@ -104,24 +103,28 @@ struct PomodoroView: View {
             
             // Infos sur l'activité selectionnée
             if self.selectedPickerIndex != 0 {
-                Text("Temps focus: \(self.activitySelected?.temps_focus ?? defaultTimer)")
-                Text("Temps pause: \(self.activitySelected?.temps_pause ?? defaultPause)")
-                Text("Nombre de rounds: \(self.activitySelected?.nb_round ?? defaultNbRounds)")
+                Text("Temps focus: \(appState.activitySelected?.temps_focus ?? defaultTimer)")
+                Text("Temps pause: \(appState.activitySelected?.temps_pause ?? defaultPause)")
+                Text("Nombre de rounds: \(appState.activitySelected?.nb_round ?? defaultNbRounds)")
             }
             
             if self.timerManager.timerMode == .initial {
+                
                 
                 Picker(selection: $selectedPickerIndex, label: Text("")){
                     ForEach(activitiesObs.activities, id: \.self.id) { activity in
                         Text("N°\(activity.id). " + activity.nom + "")
                     }
                 }
-                .onReceive([self.selectedPickerIndex].publisher.first()) { (value) in
-                    // print(value)
-                    if (value != 0) {
-                        if (activitiesObs.activities.filter{ $0.id == value }.count > 0){
-                            self.activitySelected = activitiesObs.activities.filter{ $0.id == value }[0]
-                        }                            
+                .onChange(of: selectedPickerIndex) { newValue in
+                    print("selectedPickerIndex changed to \(selectedPickerIndex)!")
+                    if (appState.selectedTab == 1) {
+                        if (activitiesObs.activities.filter{ $0.id == selectedPickerIndex }.count > 0){
+                            // Bug : infinite loop
+                            print("TEST \(self.selectedPickerIndex)")
+                            appState.activitySelected = activitiesObs.activities.filter{ $0.id == selectedPickerIndex }[0]
+                            print(activitiesObs.activities.filter{ $0.id == selectedPickerIndex }[0])
+                        }
                     }
                 }
                 .labelsHidden()
@@ -140,7 +143,7 @@ struct PomodoroView: View {
                 }
                 .padding(.all)
                 
-                Text(self.activitySelected?.nom ?? "")
+                Text(appState.activitySelected?.nom ?? "")
                     .font(.title2)
                 
                 Spacer()
@@ -182,12 +185,12 @@ struct PomodoroView: View {
             
             
         }
-        .offset(y: (appState.timerIsRunning && appState.selectedTab == 1)  ? -60 : 0 ) // offset à l'apparition de la vue
-        .offset(y: (self.timerManager.timerMode != .initial)  ? -30 : 0 ) // offset au lancement du timer
+//        .offset(y: (appState.timerIsRunning && appState.selectedTab == 1)  ? -50 : 0 ) // offset à l'apparition de la vue
+//        .offset(y: (self.timerManager.timerMode != .initial)  ? -30 : 0 ) // offset au lancement du timer
         .padding(20)
         .onDisappear {
-            self.timerManager.stopTimer()
-            self.timerManager.resetTimer()
+            //            self.timerManager.stopTimer()
+            //            self.timerManager.resetTimer()
             print("QUIT VIEW POMODORO")        
         }
         .onAppear() {
@@ -214,11 +217,11 @@ struct PomodoroView: View {
             // Préparer les notifs si on était pas en pause ni en initial au moment de quitter
             if(timerManager.timerMode != .paused && timerManager.timerMode != .pausedbreaktime
                 && timerManager.timerMode != .initial){
-
+                
                 // Enregistre les notifs pour alerter l'utilisateur que le round / pause / session est terminé
                 
                 print("Total remaining time : \(self.timerManager.clcTotalRemainingTimeSeconds())")
-                                
+                
                 print("==== ================ ====")
                 print("== Vérifier les valeurs ==")
                 print("==== ================ ====")

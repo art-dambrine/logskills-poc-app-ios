@@ -44,7 +44,7 @@ struct ContentView: View {
                     .tag(2)
             }
             .padding(.bottom,2)
-            .offset(y: (appState.timerIsRunning && appState.selectedTab == 1) ? 50 : 0 )
+//            .offset(y: (appState.timerIsRunning && appState.selectedTab == 1) ? 50 : 0 )
 //            .onChange(of: appState.selectedTab, perform: { index in
 //                /// Example of event when we switch between tabs
 //                print("HELLO \(index)")
