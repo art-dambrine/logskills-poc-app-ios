@@ -13,6 +13,7 @@ struct PomodoroView: View {
     @EnvironmentObject var settings: Settings
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var timerManager: TimerManager
+    @EnvironmentObject var user: User
     
     
     var notificationManager = NotificationManager()
@@ -72,13 +73,15 @@ struct PomodoroView: View {
                                 // Sauvegarde du log sur l'API
                                 logsApi().createLog(
                                     apiBaseUrl: settings.apiBaseUrl,
+                                    token: user.token,
                                     log: Logs(id: 0,
                                               temps_total: timerManager.clcTempsTotalSeconds(
                                                 nbRoundRestant: appState.activitySelected?.nb_round ?? defaultNbRounds,
                                                 nbPauseRestant: (appState.activitySelected?.nb_round ?? defaultNbRounds) - 1
                                               ) / multiplicateurSecondes,
                                               temps_actif: timerManager.clcTempsActifSeconds(nbRoundRestant: appState.activitySelected?.nb_round ?? defaultNbRounds) / multiplicateurSecondes,
-                                              id_activite: appState.activitySelected?.id ?? 0
+                                              id_activite: appState.activitySelected?.id ?? 0,
+                                              date: ""
                                     )
                                 )
                             },

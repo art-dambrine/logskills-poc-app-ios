@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct ListActivityView: View {
-    @EnvironmentObject var settings: Settings    
+    @EnvironmentObject var settings: Settings
+    @EnvironmentObject var user: User
     @EnvironmentObject var activitiesObs: ActivitiesObs
     @EnvironmentObject var categoriesObs: CategoriesObs
     @State private var isShowingCreationView = false
@@ -20,8 +21,7 @@ struct ListActivityView: View {
             
             HStack{
                 Text("Ajouter une activité")
-                    .bold()
-                    .font(.title2)
+                    .foregroundColor(.blue)
                     .background(
                         NavigationLink(destination: FormActivityView(), isActive: $isShowingCreationView){
                             EmptyView()
@@ -38,7 +38,7 @@ struct ListActivityView: View {
                     }
                 }
                 
-            }.padding(20)
+            }.padding(.vertical, 20)
             
             
             
@@ -76,7 +76,7 @@ struct ListActivityView: View {
         // delete the objects here`
         let index = offsets[offsets.startIndex]
         // Delete from API
-        activityApi().deleteActivity(apiBaseUrl: settings.apiBaseUrl, activityId: self.activitiesObs.activities[index].id)
+        activityApi().deleteActivity(apiBaseUrl: settings.apiBaseUrl, token: user.token, activityId: self.activitiesObs.activities[index].id)
         // Delete from view
         self.activitiesObs.activities.remove(atOffsets: offsets)
     }

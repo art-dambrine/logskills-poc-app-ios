@@ -10,6 +10,7 @@ import Foundation
 class User: ObservableObject {    
     @Published var username: String = UserDefaults.standard.string(forKey: "username") ?? ""
     @Published var password: String = UserDefaults.standard.string(forKey: "password") ?? ""
+    @Published var token: String = UserDefaults.standard.string(forKey: "accessToken") ?? ""
 }
 
 class TokenResponse: Codable {

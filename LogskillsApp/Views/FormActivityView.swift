@@ -12,6 +12,7 @@ struct FormActivityView: View {
     
     @EnvironmentObject var settings: Settings
     @EnvironmentObject var categoriesObs: CategoriesObs
+    @EnvironmentObject var user: User
     
     
     @State private var categories: [Category] = []
@@ -101,7 +102,7 @@ struct FormActivityView: View {
                                 id_categorie: categoryFilteredId
                             )                                                        
                             
-                            activityApi().postActivity(apiBaseUrl: settings.apiBaseUrl, activity: activity)
+                            activityApi().postActivity(apiBaseUrl: settings.apiBaseUrl, token:user.token, activity: activity)
                             
                             // return back to home view after 0.2 sec
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -122,7 +123,7 @@ struct FormActivityView: View {
                                 id_categorie: categoryFilteredId
                             )
                             
-                            activityApi().updateActivity(apiBaseUrl: settings.apiBaseUrl, activity: activity)
+                            activityApi().updateActivity(apiBaseUrl: settings.apiBaseUrl,token: user.token, activity: activity)
                             
                             // return back to home view after 0.2 sec
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -135,7 +136,7 @@ struct FormActivityView: View {
                     if activityAlreadyExist {
                         Button("Delete activity") {
                             
-                            activityApi().deleteActivity(apiBaseUrl: settings.apiBaseUrl, activityId: selectedActivity.id)
+                            activityApi().deleteActivity(apiBaseUrl: settings.apiBaseUrl,token: user.token, activityId: selectedActivity.id)
                             
                             // return back to home view after 0.2 sec
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {

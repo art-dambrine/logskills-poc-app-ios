@@ -36,19 +36,22 @@ struct ContentView: View {
                     }
                     .tag(1)
                 
-                Text("The content of Stats is coming soon..")
-                    .tabItem {
-                        Image(systemName: "filemenu.and.selection")
-                        Text("Stats")
-                    }
-                    .tag(2)
+                NavigationView{
+                    StatsView()
+                        .navigationTitle("Statistiques")
+                }
+                .tabItem {
+                    Image(systemName: "filemenu.and.selection")
+                    Text("Stats")
+                }
+                .tag(2)
             }
             .padding(.bottom,2)
-//            .offset(y: (appState.timerIsRunning && appState.selectedTab == 1) ? 50 : 0 )
-//            .onChange(of: appState.selectedTab, perform: { index in
-//                /// Example of event when we switch between tabs
-//                print("HELLO \(index)")
-//            })
+            //            .offset(y: (appState.timerIsRunning && appState.selectedTab == 1) ? 50 : 0 )
+            //            .onChange(of: appState.selectedTab, perform: { index in
+            //                /// Example of event when we switch between tabs
+            //                print("HELLO \(index)")
+            //            })
             
             
             .navigationBarItems(

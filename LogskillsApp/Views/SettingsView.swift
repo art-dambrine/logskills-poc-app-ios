@@ -75,6 +75,8 @@ struct SettingsView: View {
                         apiUser().authenticate(apiBaseUrl: settings.apiBaseUrl, login: username, password: password, completion: { (token) in
                             // print(token.accessToken)
                             UserDefaults.standard.set(token.accessToken, forKey: "accessToken")
+                            user.token = token.accessToken
+                            
                             
                             // return back to home view after 0.2 sec
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {

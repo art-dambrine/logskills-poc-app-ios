@@ -25,6 +25,7 @@
 		FA971B4A2624C220003BA931 /* metalgong.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FA971B452624C220003BA931 /* metalgong.mp3 */; };
 		FA971B4B2624C220003BA931 /* bikehorn.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FA971B462624C220003BA931 /* bikehorn.mp3 */; };
 		FA971B4C2624C220003BA931 /* doorbell.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FA971B472624C220003BA931 /* doorbell.mp3 */; };
+		FADEEEE526275732005027F2 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADEEEE426275732005027F2 /* StatsView.swift */; };
 		FAF005DF2622FF2C00EFB8CD /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF005DE2622FF2C00EFB8CD /* User.swift */; };
 		FAF005E6262302C800EFB8CD /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF005E5262302C800EFB8CD /* Settings.swift */; };
 		FAF005EF262323AD00EFB8CD /* ListActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF005EE262323AD00EFB8CD /* ListActivityView.swift */; };
@@ -51,6 +52,7 @@
 		FA971B452624C220003BA931 /* metalgong.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = metalgong.mp3; sourceTree = "<group>"; };
 		FA971B462624C220003BA931 /* bikehorn.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = bikehorn.mp3; sourceTree = "<group>"; };
 		FA971B472624C220003BA931 /* doorbell.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = doorbell.mp3; sourceTree = "<group>"; };
+		FADEEEE426275732005027F2 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		FAF005DE2622FF2C00EFB8CD /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		FAF005E5262302C800EFB8CD /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		FAF005EE262323AD00EFB8CD /* ListActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListActivityView.swift; sourceTree = "<group>"; };
@@ -148,6 +150,7 @@
 				FAF005EE262323AD00EFB8CD /* ListActivityView.swift */,
 				FA397F9D26232764006CCC28 /* FormActivityView.swift */,
 				FA36F16F26237D2A009FA024 /* PomodoroView.swift */,
+				FADEEEE426275732005027F2 /* StatsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -237,6 +240,7 @@
 				FA36F17026237D2A009FA024 /* PomodoroView.swift in Sources */,
 				FA397F9E26232764006CCC28 /* FormActivityView.swift in Sources */,
 				FA14E53E2625F788001316D4 /* Logs.swift in Sources */,
+				FADEEEE526275732005027F2 /* StatsView.swift in Sources */,
 				FA397FA226232D56006CCC28 /* Activity.swift in Sources */,
 				FAF005DF2622FF2C00EFB8CD /* User.swift in Sources */,
 				FA6713DD262032C900E05128 /* LogskillsAppApp.swift in Sources */,

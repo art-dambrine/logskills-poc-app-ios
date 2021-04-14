@@ -20,6 +20,7 @@ struct Activity: Codable {
 
 class ActivitiesObs: ObservableObject {
     @ObservedObject var settings = Settings()
+    @ObservedObject var user = User()
     @Published var activities: [Activity] = []
     
     init(){
@@ -28,8 +29,10 @@ class ActivitiesObs: ObservableObject {
     }
     
     func refreshActivityList(){
-        activityApi().getAllActivities(apiBaseUrl: settings.apiBaseUrl) { (activities) in
-            self.activities = activities
+        activityApi().getAllActivities(apiBaseUrl: settings.apiBaseUrl, token: user.token) { (activities) in
+            DispatchQueue.main.async {
+                self.activities = activities
+            }            
         }
     }
     
@@ -37,12 +40,12 @@ class ActivitiesObs: ObservableObject {
 
 
 class activityApi {
-    func getAllActivities(apiBaseUrl:String, completion:@escaping ([Activity]) -> ()) {
-
+    func getAllActivities(apiBaseUrl:String, token: String, completion:@escaping ([Activity]) -> ()) {
+        
         let semaphore = DispatchSemaphore (value: 0)
         
         var request = URLRequest(url: URL(string: apiBaseUrl + "/activites")!,timeoutInterval: Double.infinity)
-        request.addValue(UserDefaults.standard.string(forKey: "accessToken") ?? "", forHTTPHeaderField: "x-access-token")
+        request.addValue(token, forHTTPHeaderField: "x-access-token")
         
         request.httpMethod = "GET"
         
@@ -80,76 +83,76 @@ class activityApi {
     }
     
     
-    func postActivity(apiBaseUrl:String, activity: Activity) {
-                
+    func postActivity(apiBaseUrl:String,token:String, activity: Activity) {
+        
         let semaphore = DispatchSemaphore (value: 0)
-
+        
         let parameters = "{\r\n    \"nom\": \"" + activity.nom + "\",\r\n    \"focus\": " + String(activity.temps_focus) + ",\r\n    \"pause\": " + String(activity.temps_pause) + ",\r\n    \"round\": " + String(activity.nb_round) + ",\r\n    \"id_categorie\": " + String(activity.id_categorie) + ",\r\n  \"tags\": []\r\n}\r\n"
         
         let postData = parameters.data(using: .utf8)
-
+        
         var request = URLRequest(url: URL(string: apiBaseUrl + "/activites")!,timeoutInterval: Double.infinity)
-        request.addValue(UserDefaults.standard.string(forKey: "accessToken") ?? "", forHTTPHeaderField: "x-access-token")
+        request.addValue(token, forHTTPHeaderField: "x-access-token")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-
+        
         request.httpMethod = "POST"
         request.httpBody = postData
-
+        
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
-          guard let data = data else {
-            print(String(describing: error))
+            guard let data = data else {
+                print(String(describing: error))
+                semaphore.signal()
+                return
+            }
+            print(String(data: data, encoding: .utf8)!)
             semaphore.signal()
-            return
-          }
-          print(String(data: data, encoding: .utf8)!)
-          semaphore.signal()
         }
-
+        
         task.resume()
         semaphore.wait()
     }
     
-    func updateActivity(apiBaseUrl:String, activity: Activity){
-                
+    func updateActivity(apiBaseUrl:String,token:String, activity: Activity){
+        
         let semaphore = DispatchSemaphore (value: 0)
-
+        
         let parameters = "{\r\n    \"nom\": \"" + String(activity.nom) + "\",\r\n    \"focus\": " + String(activity.temps_focus) + ",\r\n    \"pause\": " + String(activity.temps_pause) + ",\r\n    \"round\": " + String(activity.nb_round) + ",\r\n    \"id_categorie\": " + String(activity.id_categorie) + "    \r\n}\r\n"
         
         let postData = parameters.data(using: .utf8)
-
+        
         var request = URLRequest(url: URL(string: apiBaseUrl + "/activites/" + String(activity.id) )!,timeoutInterval: Double.infinity)
-
-        request.addValue(UserDefaults.standard.string(forKey: "accessToken") ?? "", forHTTPHeaderField: "x-access-token")
-
+        
+        request.addValue(token, forHTTPHeaderField: "x-access-token")
+        
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-
+        
         request.httpMethod = "PUT"
         request.httpBody = postData
-
+        
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
-          guard let data = data else {
-            print(String(describing: error))
+            guard let data = data else {
+                print(String(describing: error))
+                semaphore.signal()
+                return
+            }
+            print(String(data: data, encoding: .utf8)!)
             semaphore.signal()
-            return
-          }
-          print(String(data: data, encoding: .utf8)!)
-          semaphore.signal()
         }
-
+        
         task.resume()
         semaphore.wait()
         
     }
     
     
-    func deleteActivity(apiBaseUrl:String, activityId: Int){
+    func deleteActivity(apiBaseUrl:String,token:String, activityId: Int){
         
         let semaphore = DispatchSemaphore (value: 0)
         
         var request = URLRequest(url: URL(string: apiBaseUrl + "/activites/" + String(activityId) )!,timeoutInterval: Double.infinity)
         request.httpMethod = "DELETE"
         
-        request.addValue(UserDefaults.standard.string(forKey: "accessToken") ?? "", forHTTPHeaderField: "x-access-token")
+        request.addValue(token, forHTTPHeaderField: "x-access-token")
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data else {
