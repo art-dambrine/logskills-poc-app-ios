@@ -26,7 +26,7 @@ struct PomodoroView: View {
     let defaultTimer = 25 // mins
     let defaultPause = 5 // mins
     let defaultNbRounds = 3 // 3 rounds        
-    let multiplicateurSecondes = 1 // changer : pendant le dev à 1sec et à 60sec en prod
+    @State var multiplicateurSecondes = 60 // changer : pendant le dev à 1sec et à 60sec en prod
     
     
     var body: some View {        
@@ -183,6 +183,9 @@ struct PomodoroView: View {
         .onAppear() {
             // Si jamais effectué proposer la possibilité de recevoir des notifications
             appState.timerIsRunning = true
+            
+            // Si dev multiplicateur = 1 sec, sinon en prod multiplicateur = 60 sec
+            self.multiplicateurSecondes = (settings.devMode) ? 1 : 60
             
             notificationManager.registerLocal()
             

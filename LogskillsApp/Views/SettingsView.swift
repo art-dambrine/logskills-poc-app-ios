@@ -65,6 +65,10 @@ struct SettingsView: View {
                     }
                 }
                 
+                Section(header: Text("Developper mode")){
+                    Toggle((settings.devMode) ? "Dev mode is enabled" : "Dev mode is disabled", isOn: $settings.devMode)
+                }
+                
                 
                 Section {
                     Button("Save changes & authenticate") {
@@ -76,6 +80,8 @@ struct SettingsView: View {
                             // print(token.accessToken)
                             UserDefaults.standard.set(token.accessToken, forKey: "accessToken")
                             user.token = token.accessToken
+                            
+                            UserDefaults.standard.set(settings.devMode, forKey: "devMode")
                             
                             
                             // return back to home view after 0.2 sec
