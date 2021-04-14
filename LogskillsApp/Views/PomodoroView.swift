@@ -120,10 +120,8 @@ struct PomodoroView: View {
                     print("selectedPickerIndex changed to \(selectedPickerIndex)!")
                     if (appState.selectedTab == 1) {
                         if (activitiesObs.activities.filter{ $0.id == selectedPickerIndex }.count > 0){
-                            // Bug : infinite loop
-                            print("TEST \(self.selectedPickerIndex)")
+                            // Bug : infinite loop résolu
                             appState.activitySelected = activitiesObs.activities.filter{ $0.id == selectedPickerIndex }[0]
-                            print(activitiesObs.activities.filter{ $0.id == selectedPickerIndex }[0])
                         }
                     }
                 }
@@ -189,6 +187,11 @@ struct PomodoroView: View {
             activitiesObs.refreshActivityList()
             if activitiesObs.activities.count > 0 {
                 self.selectedPickerIndex = activitiesObs.activities[0].id
+                if (appState.selectedTab == 1) {
+                    if (activitiesObs.activities.filter{ $0.id == selectedPickerIndex }.count > 0){
+                        appState.activitySelected = activitiesObs.activities.filter{ $0.id == selectedPickerIndex }[0]
+                    }
+                }
             }                        
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
