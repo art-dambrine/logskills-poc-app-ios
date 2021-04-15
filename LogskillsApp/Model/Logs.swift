@@ -16,7 +16,67 @@ struct Logs: Codable {
     let date: String
 }
 
+struct Focus_jour: Codable {
+    let date_jour: String
+    let focus_total_jour: Int
+}
+
+struct Focus_activite: Codable {
+    let id_activite: Int
+    let focus_total_activite: Int
+}
+
+struct Stats: Codable {
+    let focus_moyen_jour_periode: Int
+    let focus_jours: Focus_jour
+    let focus_activites: [Focus_activite]
+}
+
 class logsApi {
+    
+    func getStatsToday(apiBaseUrl:String, token:String, completion:@escaping (Stats) -> ()){
+        
+        let semaphore = DispatchSemaphore (value: 0)
+
+        let parameters = "{\r\n \"date_debut\" : \"2021-04-14\",\r\n \"date_fin\" : \"2021-04-15\"\r\n}"
+        let postData = parameters.data(using: .utf8)
+
+        var request = URLRequest(url: URL(string: apiBaseUrl + "/stats")!,timeoutInterval: Double.infinity)
+        request.addValue(token, forHTTPHeaderField: "x-access-token")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        request.httpMethod = "POST"
+        request.httpBody = postData
+
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+          guard let data = data else {
+            print(String(describing: error))
+            semaphore.signal()
+            return
+          }
+            
+            if let httpResponse = response as? HTTPURLResponse {
+                print("statusCode \(httpResponse.statusCode)")
+                
+                if (httpResponse.statusCode == 200) {
+                    let stats = try! JSONDecoder().decode(Stats.self, from: data)
+                    
+                    DispatchQueue.main.async {
+                        completion(stats)
+                    }
+                }
+            }
+            
+            
+          print(String(data: data, encoding: .utf8)!)
+          semaphore.signal()
+        }
+
+        task.resume()
+        semaphore.wait()
+        
+    }
+
     
     func getRecentLogs(apiBaseUrl:String,token:String, completion:@escaping ([Logs]) -> ()){
         let semaphore = DispatchSemaphore (value: 0)
