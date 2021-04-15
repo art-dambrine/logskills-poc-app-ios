@@ -98,7 +98,8 @@ struct StatsView: View {
             
             if(selectedPeriode == "Week") {
                 Section(header: Text("Cette semaine")){
-                    Text("Moyenne de \(self.weekStats.focus_moyen_jour_periode ?? 0) mins focus")
+                    Text("Total de \(clcTotalTimeWeek()) mins sur la semaine")
+                    Text("Moyenne de \(self.weekStats.focus_moyen_jour_periode ?? 0) mins focus par jour")
                 }
                 
                 Section(header: Text("Répartition")){
@@ -164,6 +165,18 @@ struct StatsView: View {
         
             
         
+    }
+    
+    func clcTotalTimeWeek()->Int{
+        // loop sur self.weekStats.focus_activites
+        var res = 0
+        if (self.weekStats.focus_activites.count > 0){
+            for statacti in self.weekStats.focus_activites {
+                res += statacti.focus_total_activite
+            }
+        }
+        
+        return res
     }
             
 }
