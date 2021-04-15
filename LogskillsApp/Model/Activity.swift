@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct Activity: Codable {
+struct Activity: Codable, Equatable {
     let id: Int
     let nom: String
     let temps_focus: Int // En minutes
@@ -19,9 +19,12 @@ struct Activity: Codable {
 
 
 class ActivitiesObs: ObservableObject {
+    
+    
     @ObservedObject var settings = Settings()
     @ObservedObject var user = User()
     @Published var activities: [Activity] = []
+    @Published var selectedActivityId: Int = 0
     
     init(){
         print("Init activities")
@@ -32,6 +35,7 @@ class ActivitiesObs: ObservableObject {
         activityApi().getAllActivities(apiBaseUrl: settings.apiBaseUrl, token: user.token) { (activities) in
             DispatchQueue.main.async {
                 self.activities = activities
+                self.selectedActivityId = activities[0].id
             }            
         }
     }

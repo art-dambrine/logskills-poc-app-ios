@@ -17,8 +17,8 @@ struct Logs: Codable {
 }
 
 struct Focus_jour: Codable {
-    let date_jour: String
-    let focus_total_jour: Int
+    var date_jour: String? = nil
+    var focus_total_jour: Int? = nil
 }
 
 struct Focus_activite: Codable {
@@ -27,21 +27,30 @@ struct Focus_activite: Codable {
 }
 
 struct Stats: Codable {
-    let focus_moyen_jour_periode: Int
+    var focus_moyen_jour_periode: Int? = nil
     let focus_jours: Focus_jour
     let focus_activites: [Focus_activite]
 }
 
 class logsApi {
-    
-    func getStatsToday(apiBaseUrl:String, token:String, completion:@escaping (Stats) -> ()){
+            
+    func getStatsFromTodayWithOffset(apiBaseUrl:String, token:String, offsetDay: Int, isAskingCurrentWeek: Bool = false, completion:@escaping (Stats) -> ()){
         
         let semaphore = DispatchSemaphore (value: 0)
 
-        let parameters = "{\r\n \"date_debut\" : \"2021-04-14\",\r\n \"date_fin\" : \"2021-04-15\"\r\n}"
+        var parameters = "{\r\n \"date_debut\" : \"" + DateHelper().getTodayWithOffset(offsetDay: offsetDay) + "\",\r\n \"date_fin\" : \"" + DateHelper().getTodayWithOffset(offsetDay: offsetDay+1) + "\"\r\n}"
+        
+        var timeoutLength = Double.infinity
+        
+        if(isAskingCurrentWeek){
+            print("ON DEMANDE SEMAINE")
+            parameters = "{}"
+            timeoutLength = 5.0
+        }
+        
         let postData = parameters.data(using: .utf8)
 
-        var request = URLRequest(url: URL(string: apiBaseUrl + "/stats")!,timeoutInterval: Double.infinity)
+        var request = URLRequest(url: URL(string: apiBaseUrl + "/stats")!,timeoutInterval: timeoutLength)
         request.addValue(token, forHTTPHeaderField: "x-access-token")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
 
@@ -59,8 +68,8 @@ class logsApi {
                 print("statusCode \(httpResponse.statusCode)")
                 
                 if (httpResponse.statusCode == 200) {
+                    print(String(data: data, encoding: .utf8)!)
                     let stats = try! JSONDecoder().decode(Stats.self, from: data)
-                    
                     DispatchQueue.main.async {
                         completion(stats)
                     }

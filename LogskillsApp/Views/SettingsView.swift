@@ -79,7 +79,7 @@ struct SettingsView: View {
                         apiUser().authenticate(apiBaseUrl: settings.apiBaseUrl, login: username, password: password, completion: { (token) in
                             // print(token.accessToken)
                             UserDefaults.standard.set(token.accessToken, forKey: "accessToken")
-                            user.token = token.accessToken
+                            user.token = token.accessToken ?? ""
                             
                             UserDefaults.standard.set(settings.devMode, forKey: "devMode")
                             

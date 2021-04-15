@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA0160A126283B7600C12D33 /* DateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0160A026283B7600C12D33 /* DateHelper.swift */; };
 		FA14E53E2625F788001316D4 /* Logs.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA14E53D2625F787001316D4 /* Logs.swift */; };
 		FA28A16B262428790037468E /* TimerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA28A16A262428790037468E /* TimerManager.swift */; };
 		FA36F17026237D2A009FA024 /* PomodoroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA36F16F26237D2A009FA024 /* PomodoroView.swift */; };
@@ -32,6 +33,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FA0160A026283B7600C12D33 /* DateHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateHelper.swift; sourceTree = "<group>"; };
 		FA14E53D2625F787001316D4 /* Logs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logs.swift; sourceTree = "<group>"; };
 		FA28A16A262428790037468E /* TimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerManager.swift; sourceTree = "<group>"; };
 		FA36F16F26237D2A009FA024 /* PomodoroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroView.swift; sourceTree = "<group>"; };
@@ -75,6 +77,7 @@
 				FA28A16A262428790037468E /* TimerManager.swift */,
 				FA971B342624B41E003BA931 /* SoundManager.swift */,
 				FA4378EF2625BA6700A07F84 /* NotificationManager.swift */,
+				FA0160A026283B7600C12D33 /* DateHelper.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -238,6 +241,7 @@
 				FA4378F02625BA6700A07F84 /* NotificationManager.swift in Sources */,
 				FAF005EF262323AD00EFB8CD /* ListActivityView.swift in Sources */,
 				FA36F17026237D2A009FA024 /* PomodoroView.swift in Sources */,
+				FA0160A126283B7600C12D33 /* DateHelper.swift in Sources */,
 				FA397F9E26232764006CCC28 /* FormActivityView.swift in Sources */,
 				FA14E53E2625F788001316D4 /* Logs.swift in Sources */,
 				FADEEEE526275732005027F2 /* StatsView.swift in Sources */,

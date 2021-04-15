@@ -198,7 +198,8 @@ struct PomodoroView: View {
                         appState.activitySelected = activitiesObs.activities.filter{ $0.id == selectedPickerIndex }[0]
                     }
                 }
-            }                        
+            }
+                        
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
             print("Moving to the background!")

@@ -12,6 +12,7 @@ struct FormActivityView: View {
     
     @EnvironmentObject var settings: Settings
     @EnvironmentObject var categoriesObs: CategoriesObs
+    @EnvironmentObject var activitiesObs: ActivitiesObs
     @EnvironmentObject var user: User
     
     
@@ -103,6 +104,7 @@ struct FormActivityView: View {
                             )                                                        
                             
                             activityApi().postActivity(apiBaseUrl: settings.apiBaseUrl, token:user.token, activity: activity)
+                            activitiesObs.activities.append(activity)
                             
                             // return back to home view after 0.2 sec
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -124,6 +126,10 @@ struct FormActivityView: View {
                             )
                             
                             activityApi().updateActivity(apiBaseUrl: settings.apiBaseUrl,token: user.token, activity: activity)
+                            
+                            if let index = activitiesObs.activities.firstIndex(where: { $0.id == activity.id }) {
+                                activitiesObs.activities[index] = activity
+                            }
                             
                             // return back to home view after 0.2 sec
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {

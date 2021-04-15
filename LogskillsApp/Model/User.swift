@@ -14,8 +14,8 @@ class User: ObservableObject {
 }
 
 class TokenResponse: Codable {
-    var auth: Bool
-    var accessToken: String
+    var auth: Bool? = nil
+    var accessToken: String? = nil
     
     //    {
     //        "auth": true,
@@ -43,13 +43,22 @@ class apiUser {
                 semaphore.signal()
                 return
             }
+                                                
             
-            let tokenResponse = try! JSONDecoder().decode(TokenResponse.self, from: data)
-            
-            DispatchQueue.main.async {
-                // print(tokenResponse)
-                completion(tokenResponse)
+            if let httpResponse = response as? HTTPURLResponse {
+                print("statusCode \(httpResponse.statusCode)")
+                
+                if (httpResponse.statusCode == 200) {
+                    print(String(data: data, encoding: .utf8)!)
+                    let tokenResponse = try! JSONDecoder().decode(TokenResponse.self, from: data)
+                    DispatchQueue.main.async {
+                        // print(tokenResponse)
+                        completion(tokenResponse)
+                    }
+                }
             }
+            
+            
             
             
             print(String(data: data, encoding: .utf8)!)

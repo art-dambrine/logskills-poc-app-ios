@@ -12,57 +12,86 @@ struct ListActivityView: View {
     @EnvironmentObject var user: User
     @EnvironmentObject var activitiesObs: ActivitiesObs
     @EnvironmentObject var categoriesObs: CategoriesObs
+    @State private var selectedActivityId: Int = 0
     @State private var isShowingCreationView = false
+    @State private var isShowingModifificationView = false
+    
+    enum ActiveSheet: Identifiable {
+        case first, second
+        
+        var id: Int {
+            hashValue
+        }
+    }
+    
+    @State var activeSheet: ActiveSheet?
     
     
     var body: some View {
         
-        Form{
+        NavigationView{
             
-            HStack{
-                Text("Ajouter une activité")
-                    .foregroundColor(.blue)
-                    .background(
-                        NavigationLink(destination: FormActivityView(), isActive: $isShowingCreationView){
-                            EmptyView()
-                        }.disabled(!isShowingCreationView)
-                    )
-                
-                Spacer()
-                
-                Button(action: {
-                    isShowingCreationView.toggle()
-                }) {
-                    HStack(spacing: 10) {
-                        Image(systemName: "square.and.pencil")
+            Form {
+                Section{
+                    List{
+                        ForEach(self.activitiesObs.activities, id: \.id){ activite in
+                            HStack{
+                                Button(action: {
+                                    print(activite)
+                                    activitiesObs.selectedActivityId = activite.id
+                                    // return back to home view after 0.2 sec
+                                    DispatchQueue.global().asyncAfter(deadline: .now() + 0.2) {
+                                        // isShowingModifificationView.toggle()
+                                        activeSheet = .second
+                                    }
+                                }) {
+                                    HStack(spacing: 10) {
+                                        Text(activite.nom)
+                                    }
+                                }
+                                
+                            }.padding(10)
+                            .foregroundColor(.primary)
+                            .opacity(0.8)
+                        }.onDelete(perform: delete)
+                        
                     }
                 }
                 
-            }.padding(.vertical, 20)
-            
-            
-            
-            Section{
-                List{
-                    ForEach(self.activitiesObs.activities, id: \.id){ activite in
-                        HStack{
-                            Text(activite.nom)
-                                .font(.subheadline)
-                            
-                            NavigationLink(destination: FormActivityView(activityAlreadyExist: true, selectedActivity: activite)){
-                                EmptyView()
-                            }
-                            
-                            // Button(action: { activityApi().deleteActivity(apiBaseUrl: settings.apiBaseUrl, activityId: activite.id) }) { Image(systemName: "trash") }
-                        }.padding(10)
-                    }.onDelete(perform: delete)
-                    
+                Section {
+                    Button(action: {                                                
+                        activeSheet = .first
+                    }) {
+                        HStack(spacing: 10) {
+                            Text("Ajouter une activité")
+                            Spacer()
+                            Image(systemName: "square.and.pencil")
+                        }
+                    }
+                }
+                
+            }
+            .navigationTitle("Activities")
+                        
+            .sheet(item: $activeSheet) { item in
+                switch item {
+                case .first:
+                    FormActivityView()
+                case .second:
+                    // Modif view
+                    if(self.activitiesObs.selectedActivityId != 0){
+                        FormActivityView(activityAlreadyExist: true, selectedActivity: self.activitiesObs.activities.filter{$0.id == self.activitiesObs.selectedActivityId}[0])
+                    } else {
+                        Text("Id: \(activitiesObs.selectedActivityId)")
+                    }
                 }
             }
             
             
-        }.onAppear {
-            activitiesObs.refreshActivityList()
+            
+        }
+        .onAppear {
+            activitiesObs.refreshActivityList()            
         }
         // Important
         .environmentObject(activitiesObs)
