@@ -42,7 +42,7 @@ https://www.hackingwithswift.com/articles/196/learn-swiftui-with-free-tutorials
 
 
 
-![xcode_logskills](/Users/arthurdambrine/Desktop/xcode_logskills.png)
+![xcode_logskills](captures/xcode_logskills.png)
 
 Figure 4 : Aperçu de notre environement de develeppement iOS sur xcode.
 
