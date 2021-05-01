@@ -46,7 +46,7 @@ class NotificationManager {
                 if (nbOfCurrentRoundOrPause == nbOfMaxRoundOrPause) {
                     content.body = "Fin de la session revenez sur l'app pour enregistrer la progression."
                 } else {
-                    content.body = "Revenez sur l'application et pensez à prendre une pause."
+                    content.body = "Pensez à prendre une pause."
                 }
                 
             } else {

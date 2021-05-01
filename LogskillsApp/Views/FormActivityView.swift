@@ -23,7 +23,7 @@ struct FormActivityView: View {
     @State private var activityName: String = ""
     
     @State private var nbRoundSelected = 1
-    @State private var rounds = [1, 2, 3]
+    @State private var rounds = [1, 2, 3, 4]
     
     @State private var tempsFocus: Double = 25
     @State private var tempsPause: Double = 5

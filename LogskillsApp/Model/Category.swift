@@ -50,7 +50,7 @@ class categoryApi {
             if let httpResponse = response as? HTTPURLResponse {
                 print("statusCode \(httpResponse.statusCode)")
                 
-                if (httpResponse.statusCode != 404) {
+                if (httpResponse.statusCode == 200) {
                     let categories = try! JSONDecoder().decode([Category].self, from: data)
                     // print(categories)
                     DispatchQueue.main.async {
